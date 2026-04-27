@@ -1,0 +1,919 @@
+openapi: 3.0.0
+info:
+  title: Palomino Learning API
+  description: Documentación completa de las operaciones de base de datos en el sistema de gestión y venta de cursos
+  version: 1.0.0
+  contact:
+    name: Palomino Learning
+    
+servers:
+  - url: https://supabase.co
+    description: Supabase Database Server
+
+tags:
+  - name: Auth
+    description: Operaciones de autenticación
+  - name: Usuarios
+    description: Gestión de usuarios
+  - name: Cursos
+    description: Gestión de cursos
+  - name: Compras
+    description: Operaciones de compra
+  - name: Pagos
+    description: Validación y control de pagos
+  - name: Roles
+    description: Gestión de roles
+
+# ============================================
+# AUTH - OPERACIONES DE AUTENTICACIÓN
+# ============================================
+
+paths:
+  /auth/v1/signup:
+    post:
+      tags:
+        - Auth
+      summary: Registrar nuevo usuario
+      description: Crea una nueva cuenta de usuario. Automáticamente se ejecuta el trigger que copia el usuario a la tabla usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: usuario@example.com
+                password:
+                  type: string
+                  format: password
+                  example: MiContraseñaSegura123
+                nombre:
+                  type: string
+                  example: Juan Pérez
+              required:
+                - email
+                - password
+                - nombre
+      responses:
+        '200':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: abc-123-def-456
+                  email:
+                    type: string
+                  user_metadata:
+                    type: object
+                    properties:
+                      nombre:
+                        type: string
+        '400':
+          description: Email ya existe o datos inválidos
+        '500':
+          description: Error en el servidor
+
+  /auth/v1/signin:
+    post:
+      tags:
+        - Auth
+      summary: Iniciar sesión
+      description: Autentica un usuario existente. Devuelve un token de sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: usuario@example.com
+                password:
+                  type: string
+                  format: password
+                  example: MiContraseñaSegura123
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: Token JWT para usar en peticiones posteriores
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      email:
+                        type: string
+        '401':
+          description: Email o contraseña incorrectos
+
+  /auth/v1/signout:
+    post:
+      tags:
+        - Auth
+      summary: Cerrar sesión
+      description: Invalida el token de sesión actual del usuario
+      responses:
+        '204':
+          description: Sesión cerrada exitosamente
+        '401':
+          description: Token inválido o expirado
+
+# ============================================
+# USUARIOS - GESTIÓN DE USUARIOS
+# ============================================
+
+  /rest/v1/usuarios:
+    get:
+      tags:
+        - Usuarios
+      summary: Listar todos los usuarios
+      description: |
+        Obtiene la lista de usuarios. Solo admin puede ver todos.
+        Los clientes solo ven su propio perfil (protegido por RLS).
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Token JWT obtenido al iniciar sesión
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIs...
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    nombre:
+                      type: string
+                    email:
+                      type: string
+                    rol_id:
+                      type: integer
+                      example: 2
+                    fecha_registro:
+                      type: string
+                      format: date-time
+        '401':
+          description: No autenticado
+        '403':
+          description: Sin permisos para ver otros usuarios
+
+    post:
+      tags:
+        - Usuarios
+      summary: Crear usuario (interno)
+      description: Operación automática. Se ejecuta via trigger cuando alguien se registra en Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  description: Copiado de auth.users
+                nombre:
+                  type: string
+                email:
+                  type: string
+                rol_id:
+                  type: integer
+                  example: 2
+      responses:
+        '201':
+          description: Usuario creado
+
+  /rest/v1/usuarios/{id}:
+    get:
+      tags:
+        - Usuarios
+      summary: Obtener usuario por ID
+      description: Devuelve los datos de un usuario específico. Protegido por RLS
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario (UUID)
+          schema:
+            type: string
+            format: uuid
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  nombre:
+                    type: string
+                  email:
+                    type: string
+                  rol_id:
+                    type: integer
+                  fecha_registro:
+                    type: string
+                    format: date-time
+        '404':
+          description: Usuario no encontrado
+
+    patch:
+      tags:
+        - Usuarios
+      summary: Actualizar usuario
+      description: Modifica datos del usuario (solo puede actualizar el suyo, excepto admin)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+      responses:
+        '200':
+          description: Usuario actualizado
+        '403':
+          description: Sin permisos
+
+# ============================================
+# CURSOS - GESTIÓN DE CURSOS
+# ============================================
+
+  /rest/v1/cursos:
+    get:
+      tags:
+        - Cursos
+      summary: Listar todos los cursos
+      description: Devuelve los cursos activos. public - no requiere autenticación
+      responses:
+        '200':
+          description: Lista de cursos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nombre:
+                      type: string
+                      example: "Python Avanzado"
+                    descripcion:
+                      type: string
+                      example: "Aprende programación avanzada en Python"
+                    precio:
+                      type: number
+                      format: decimal
+                      example: 99.99
+                    imagen_url:
+                      type: string
+                      format: uri
+                    duracion:
+                      type: string
+                      example: "4 semanas"
+                    estado:
+                      type: boolean
+                      example: true
+                    fecha_creacion:
+                      type: string
+                      format: date-time
+
+    post:
+      tags:
+        - Cursos
+      summary: Crear nuevo curso
+      description: Solo admin puede crear cursos. Requiere autenticación y rol ADMIN
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+                precio:
+                  type: number
+                  format: decimal
+                imagen_url:
+                  type: string
+                  format: uri
+                duracion:
+                  type: string
+                estado:
+                  type: boolean
+                  default: true
+              required:
+                - nombre
+                - descripcion
+                - precio
+      responses:
+        '201':
+          description: Curso creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  nombre:
+                    type: string
+                  precio:
+                    type: number
+        '403':
+          description: Solo admin puede crear cursos
+
+  /rest/v1/cursos/{id}:
+    get:
+      tags:
+        - Cursos
+      summary: Obtener detalles de un curso
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Datos completos del curso
+        '404':
+          description: Curso no encontrado
+
+    patch:
+      tags:
+        - Cursos
+      summary: Actualizar curso
+      description: Solo admin puede editar cursos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+                precio:
+                  type: number
+                estado:
+                  type: boolean
+      responses:
+        '200':
+          description: Curso actualizado
+        '403':
+          description: Solo admin
+
+    delete:
+      tags:
+        - Cursos
+      summary: Eliminar curso
+      description: Solo admin. El curso se elimina de la BD
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Curso eliminado
+        '403':
+          description: Solo admin
+
+# ============================================
+# COMPRAS - OPERACIONES DE COMPRA
+# ============================================
+
+  /rest/v1/compras:
+    get:
+      tags:
+        - Compras
+      summary: Listar compras
+      description: Admin ve todas las compras. Cliente ve solo las suyas (RLS protegido)
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de compras
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    usuario_id:
+                      type: string
+                      format: uuid
+                    curso_id:
+                      type: integer
+                    fecha:
+                      type: string
+                      format: date-time
+                    estado:
+                      type: string
+                      enum:
+                        - PENDIENTE
+                        - ACTIVO
+                        - BLOQUEADO
+
+    post:
+      tags:
+        - Compras
+      summary: Crear nueva compra
+      description: Usuario compra un curso. Se crea registro en tabla compras
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                curso_id:
+                  type: integer
+                  example: 1
+              required:
+                - curso_id
+      responses:
+        '201':
+          description: Compra creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  usuario_id:
+                    type: string
+                  curso_id:
+                    type: integer
+                  estado:
+                    type: string
+                    example: PENDIENTE
+        '400':
+          description: Curso no existe o usuario ya lo compró
+        '401':
+          description: No autenticado
+
+  /rest/v1/compras/{id}:
+    get:
+      tags:
+        - Compras
+      summary: Obtener detalles de una compra
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos de la compra con información del curso
+        '404':
+          description: Compra no encontrada
+
+    patch:
+      tags:
+        - Compras
+      summary: Actualizar estado de compra
+      description: Admin puede cambiar el estado de una compra
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado:
+                  type: string
+                  enum:
+                    - PENDIENTE
+                    - ACTIVO
+                    - BLOQUEADO
+      responses:
+        '200':
+          description: Compra actualizada
+        '403':
+          description: Solo admin
+
+# ============================================
+# PAGOS - VALIDACIÓN DE COMPROBANTES
+# ============================================
+
+  /rest/v1/pagos:
+    get:
+      tags:
+        - Pagos
+      summary: Listar pagos
+      description: Admin ve todos los pagos. Cliente ve solo los suyos (RLS protegido)
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de pagos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    compra_id:
+                      type: integer
+                    comprobante_url:
+                      type: string
+                      format: uri
+                    monto:
+                      type: number
+                      format: decimal
+                    metodo_pago:
+                      type: string
+                      example: "Transferencia"
+                    estado:
+                      type: string
+                      enum:
+                        - PENDIENTE
+                        - APROBADO
+                        - RECHAZADO
+                    fecha_pago:
+                      type: string
+                      format: date-time
+
+    post:
+      tags:
+        - Pagos
+      summary: Subir comprobante de pago
+      description: Usuario sube imagen del comprobante. Se guarda en Supabase Storage y se crea registro en pagos
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                compra_id:
+                  type: integer
+                  description: ID de la compra a la cual pertenece este pago
+                comprobante:
+                  type: string
+                  format: binary
+                  description: Archivo de imagen (JPG, PNG)
+                monto:
+                  type: number
+                  format: decimal
+                metodo_pago:
+                  type: string
+                  example: "Transferencia"
+              required:
+                - compra_id
+                - comprobante
+                - monto
+      responses:
+        '201':
+          description: Comprobante subido exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  comprobante_url:
+                    type: string
+                  estado:
+                    type: string
+                    example: PENDIENTE
+        '400':
+          description: Archivo inválido o falta información
+        '413':
+          description: Archivo demasiado grande
+
+  /rest/v1/pagos/{id}:
+    get:
+      tags:
+        - Pagos
+      summary: Obtener detalles de un pago
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos del pago con comprobante
+        '404':
+          description: Pago no encontrado
+
+    patch:
+      tags:
+        - Pagos
+      summary: Validar/Aprobar pago (Admin)
+      description: |
+        Admin revisa el comprobante y lo aprueba o rechaza.
+        Si es APROBADO → automáticamente la compra pasa a ACTIVO
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado:
+                  type: string
+                  enum:
+                    - APROBADO
+                    - RECHAZADO
+                observaciones:
+                  type: string
+                  description: Motivo si se rechaza (ej. "Monto no coincide")
+              required:
+                - estado
+      responses:
+        '200':
+          description: Pago validado. Si fue aprobado, también se actualiza la compra
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  estado:
+                    type: string
+                  compra_activo:
+                    type: boolean
+                    description: True si la compra ahora está ACTIVA
+        '403':
+          description: Solo admin puede validar pagos
+
+# ============================================
+# ROLES - GESTIÓN DE ROLES
+# ============================================
+
+  /rest/v1/roles:
+    get:
+      tags:
+        - Roles
+      summary: Listar roles disponibles
+      description: Devuelve los tipos de usuarios. No requiere autenticación
+      responses:
+        '200':
+          description: Lista de roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    nombre:
+                      type: string
+                      enum:
+                        - ADMIN
+                        - CLIENTE
+                      example: CLIENTE
+
+# ============================================
+# COMPONENTES REUTILIZABLES
+# ============================================
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        email:
+          type: string
+          format: email
+        rol_id:
+          type: integer
+        fecha_registro:
+          type: string
+          format: date-time
+
+    Curso:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        precio:
+          type: number
+          format: decimal
+        imagen_url:
+          type: string
+        duracion:
+          type: string
+        estado:
+          type: boolean
+        fecha_creacion:
+          type: string
+          format: date-time
+
+    Compra:
+      type: object
+      properties:
+        id:
+          type: integer
+        usuario_id:
+          type: string
+          format: uuid
+        curso_id:
+          type: integer
+        fecha:
+          type: string
+          format: date-time
+        estado:
+          type: string
+          enum:
+            - PENDIENTE
+            - ACTIVO
+            - BLOQUEADO
+
+    Pago:
+      type: object
+      properties:
+        id:
+          type: integer
+        compra_id:
+          type: integer
+        comprobante_url:
+          type: string
+        monto:
+          type: number
+          format: decimal
+        metodo_pago:
+          type: string
+        estado:
+          type: string
+          enum:
+            - PENDIENTE
+            - APROBADO
+            - RECHAZADO
+        observaciones:
+          type: string
+        fecha_pago:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token JWT obtenido al hacer login
+
+security:
+  - BearerAuth: []

@@ -1,0 +1,20 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "loginUser": "admin@ejemplo.com",
+  "loginPassword": "admin123",
+  "executionArgs": {
+    "projectName": "palomino-learning",
+    "projectPath": "c:\\juan\\IX\\EXPERIENCIA FORMATIVA EN SITUACIÓN REAL DE TRABAJO V\\APP-PALOMINO\\palomino-learning",
+    "testIds": [],
+    "additionalInstruction": "Test core user flows including authentication, course browsing, and dashboard navigation",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-q50rfYxiZCNEs1f5BHM9DzHcWo0ziUI9ZZnngWrZw64UdYQUDomwRJs5AjHSuu-p5mBWOQLt2fhUT9JZkZA5KuQAYwFRJgDB1xp9wmjXtUv8Hpm34Ne4R9M5kDQYIGpOpYQ"
+    }
+  },
+  "serverPort": 63670,
+  "proxy": "http://9fedaf8b-11e5-4378-adea-30d089f9be01:MQN2M7ZN7MNlGK94FFcKIXM8grHEcR5n@tun.testsprite.com:8080"
+}

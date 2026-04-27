@@ -1,0 +1,1348 @@
+[
+  {
+    "id": "TC001",
+    "title": "Access gating prevents viewing admin dashboard as a non-admin user",
+    "description": "Verifies that a logged-in student attempting to access the admin dashboard is blocked and does not see admin overview content.",
+    "category": "Admin dashboard (overview)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is denied access to admin content (redirected away or shown an unauthorized state)"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Log in and land on the student dashboard",
+    "description": "Verifies an existing user can log in with valid credentials and is routed to the dashboard.",
+    "category": "User authentication (login)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user lands on the dashboard"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "View purchases and enrollments from the dashboard",
+    "description": "Verifies that an authenticated student can access the dashboard and see their enrollments and purchase history displayed.",
+    "category": "User dashboard (enrollments & purchases)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard displays enrolled courses and a purchase history section"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Complete a course purchase and see it listed in dashboard history",
+    "description": "Verifies a student can confirm a purchase from the purchase modal and then see the purchase appear in dashboard history.",
+    "category": "Course purchase (initiate and pay)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "action",
+        "description": "Initiate purchase for the course"
+      },
+      {
+        "type": "action",
+        "description": "Provide required payment information in the purchase modal using valid values"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the purchase"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a purchase success confirmation is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new purchase appears in the purchase history list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Approve a pending payment from the payments list",
+    "description": "Verifies an administrator can open a pending payment, approve it, and see the payment status update to approved in the UI.",
+    "category": "Admin payment management (validate receipts)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin payments area"
+      },
+      {
+        "type": "action",
+        "description": "Open a payment that is currently pending"
+      },
+      {
+        "type": "action",
+        "description": "Review the payment receipt and payment details"
+      },
+      {
+        "type": "action",
+        "description": "Mark the payment as approved"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the payment status is shown as approved"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "View admin overview statistics",
+    "description": "Verifies that an authenticated admin can access the admin dashboard and see overview statistics such as pending payments and course counts.",
+    "category": "Admin dashboard (overview)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify overview statistics are displayed including pending payment counts and course totals"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Start a purchase from a course in the catalog",
+    "description": "Verifies a logged-in student can initiate a purchase for a course and reach the purchase confirmation modal.",
+    "category": "Course purchase (initiate and pay)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "action",
+        "description": "Initiate purchase for the course"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a purchase confirmation modal is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Open a purchase detail from purchase history",
+    "description": "Verifies that an authenticated student can open a purchase from the dashboard and see its payment status on the purchase details page.",
+    "category": "User dashboard (enrollments & purchases)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click a purchase from the purchase history list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the purchase details view displays the current payment status"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "View payments list as an admin",
+    "description": "Verifies an administrator can access the payments management area and see a list of payments with their statuses.",
+    "category": "Admin payment management (validate receipts)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin payments area"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a list of payments is displayed with status indicators"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "View available courses and open a course from the catalog",
+    "description": "Verifies a logged-in student can view the course catalog and open a course to see its description and pricing.",
+    "category": "Course browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify course description and pricing are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Register with valid details and see successful completion",
+    "description": "Verifies a visitor can register with a valid email and matching passwords and sees a successful registration outcome (success confirmation or being signed in).",
+    "category": "User registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with student+tc001@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with ValidPass123!A"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password confirmation field with ValidPass123!A"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a successful registration outcome is shown (success confirmation or the user is signed in and redirected to a protected area)"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Open a pending purchase and upload a payment receipt successfully",
+    "description": "Verifies a student can open a pending purchase from the dashboard, upload a receipt, and see upload success while the purchase remains pending.",
+    "category": "Upload payment receipt and view purchase state",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "action",
+        "description": "Initiate purchase for the course"
+      },
+      {
+        "type": "action",
+        "description": "Provide required payment information in the purchase modal using valid values"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the purchase"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select a purchase with pending status from purchase history"
+      },
+      {
+        "type": "action",
+        "description": "Upload a valid payment receipt file in the receipt upload control"
+      },
+      {
+        "type": "action",
+        "description": "Submit the receipt"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a receipt upload success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the purchase status is displayed as pending"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Reject a pending payment with observations",
+    "description": "Verifies an administrator can reject a pending payment with optional observations and see the payment status update to rejected in the UI.",
+    "category": "Admin payment management (validate receipts)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin payments area"
+      },
+      {
+        "type": "action",
+        "description": "Open a payment that is currently pending"
+      },
+      {
+        "type": "action",
+        "description": "Select the option to reject the payment"
+      },
+      {
+        "type": "action",
+        "description": "Fill observations into the observations field"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the rejection"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the payment status is shown as rejected"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "See active access state for an approved purchase",
+    "description": "Verifies that approved purchases appear as active access on the dashboard when the student has at least one approved purchase.",
+    "category": "User dashboard (enrollments & purchases)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Filter or switch to the view showing active/enrolled courses if available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify at least one enrolled course is shown as having active access"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "View admin courses list",
+    "description": "Verifies that an authenticated admin can view the courses management list and see courses or an empty state.",
+    "category": "Admin course management (create / list / delete / toggle)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin/cursos"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the courses management view shows a list of courses or an empty state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Review a pending payment receipt and details",
+    "description": "Verifies an administrator can open a pending payment and view the uploaded receipt and the associated payment details.",
+    "category": "Admin payment management (validate receipts)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin payments area"
+      },
+      {
+        "type": "action",
+        "description": "Open a payment that is currently pending"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a payment receipt preview or receipt access is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify payment details are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "Create a new course from the admin panel",
+    "description": "Verifies that an authenticated admin can create a course and see it appear in the admin courses list with a success confirmation.",
+    "category": "Admin course management (create / list / delete / toggle)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin/cursos"
+      },
+      {
+        "type": "action",
+        "description": "Click the action to create a new course"
+      },
+      {
+        "type": "action",
+        "description": "Fill Course TC Admin Create into the title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill A short description for Course TC Admin Create into the description field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid price into the price field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the course form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible and the new course appears in the courses list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Navigate from admin overview to a management section",
+    "description": "Verifies that an authenticated admin can use admin dashboard navigation to reach a management section such as payments or courses.",
+    "category": "Admin dashboard (overview)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to open the payments management section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the admin is on the payments management view with a list or empty state displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Inspect student list as an admin",
+    "description": "Verifies an administrator can access the student management area and see a list of registered students rendered.",
+    "category": "Admin student management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin students area"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a list of students is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Open a student to review enrollments and purchase summary",
+    "description": "Verifies an administrator can select a student from the list and view that student's enrollments and purchase history summary.",
+    "category": "Admin student management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin students area"
+      },
+      {
+        "type": "action",
+        "description": "Select a student from the list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected student's enrollment information is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected student's purchase history is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Delete a course from the admin courses list",
+    "description": "Verifies that an authenticated admin can create a course and then delete it so it is removed from the courses list.",
+    "category": "Admin course management (create / list / delete / toggle)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin/cursos"
+      },
+      {
+        "type": "action",
+        "description": "Click the action to create a new course"
+      },
+      {
+        "type": "action",
+        "description": "Fill Course TC Admin Delete into the title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill A short description for Course TC Admin Delete into the description field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid price into the price field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the course form"
+      },
+      {
+        "type": "action",
+        "description": "Return to the courses management list"
+      },
+      {
+        "type": "action",
+        "description": "Request deletion for the course named Course TC Admin Delete"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the deletion"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the deleted course no longer appears in the courses list"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "View admin reports and indicators",
+    "description": "Verifies an administrator can view the admin dashboard reports with totals and status counts rendered.",
+    "category": "Reporting (basic admin reports)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify report indicators for totals and payment status counts are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "View student purchase access states",
+    "description": "Verifies an administrator can review a student's purchase entries and see their access states (such as pending/approved/rejected) reflected in the UI.",
+    "category": "Admin student management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin students area"
+      },
+      {
+        "type": "action",
+        "description": "Select a student from the list"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the purchase history section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify purchase entries show an access or status indicator"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Dashboard handles empty state for purchases or enrollments",
+    "description": "Verifies that the dashboard shows a clear empty state when the student has no enrollments or purchases.",
+    "category": "User dashboard (enrollments & purchases)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_USER}} into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Fill {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is displayed for missing purchases or enrollments"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC025",
+    "title": "Receipt submission requires required fields",
+    "description": "Verifies the purchase details page blocks receipt submission when required receipt information is missing and shows a validation error.",
+    "category": "Upload payment receipt and view purchase state",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "action",
+        "description": "Initiate purchase for the course"
+      },
+      {
+        "type": "action",
+        "description": "Provide required payment information in the purchase modal using valid values"
+      },
+      {
+        "type": "action",
+        "description": "Confirm the purchase"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to open the dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select a purchase with pending status from purchase history"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to submit a receipt without providing required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible asking for missing receipt information"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC026",
+    "title": "Browse landing content and reach the courses catalog entry point",
+    "description": "Verifies a visitor can view the landing page content with highlighted courses/pricing and reach the entry point to view the full catalog.",
+    "category": "Landing page (public)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the highlighted courses section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify highlighted courses with pricing information are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click the link to view the full catalog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user is prompted to log in to access the courses catalog"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Purchase requires required fields before confirmation",
+    "description": "Verifies the purchase modal blocks submission when required fields are missing and shows a validation error.",
+    "category": "Course purchase (initiate and pay)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "action",
+        "description": "Select a course from the list to view details"
+      },
+      {
+        "type": "action",
+        "description": "Initiate purchase for the course"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to confirm the purchase without completing required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible indicating required information is missing"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC028",
+    "title": "Inspect a specific report breakdown",
+    "description": "Verifies an administrator can inspect a specific report section (such as top courses or payment counts) to see its detailed breakdown.",
+    "category": "Reporting (basic admin reports)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click a report section to inspect its details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected report shows a breakdown with counts or totals"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC029",
+    "title": "Filter or scope a report view",
+    "description": "Verifies an administrator can apply an available filter or scope control on the reports view and see the report results update accordingly.",
+    "category": "Reporting (basic admin reports)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Select an available report filter or scope option"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report results update to reflect the selected filter"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC030",
+    "title": "Prevent registration when password confirmation does not match",
+    "description": "Verifies registration is blocked when the password confirmation does not match and a validation error is shown.",
+    "category": "User registration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/register"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with student+tc002@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with ValidPass123!A"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password confirmation field with DifferentPass123!B"
+      },
+      {
+        "type": "action",
+        "description": "Submit the registration form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a password confirmation validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC031",
+    "title": "Return to students list after viewing a student",
+    "description": "Verifies an administrator can navigate back to the students list from a student's details view without losing access to the management area.",
+    "category": "Admin student management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin students area"
+      },
+      {
+        "type": "action",
+        "description": "Select a student from the list"
+      },
+      {
+        "type": "action",
+        "description": "Click the control to return to the students list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the students list is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC032",
+    "title": "Course catalog shows an empty state when no courses are available",
+    "description": "Verifies the courses page displays an empty state message when the catalog has no available courses to show.",
+    "category": "Course browsing",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to browse courses"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty state message is visible for the course catalog"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC033",
+    "title": "Handle empty students list state",
+    "description": "Verifies that when no students are available to display, the admin students page shows a clear empty state instead of a broken view.",
+    "category": "Admin student management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the admin students area"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify either a student list is displayed or an empty state message is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC034",
+    "title": "Show required-field validation when submitting login without credentials",
+    "description": "Verifies the login form prevents submission with missing required fields and displays validation feedback.",
+    "category": "User authentication (login)",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth/login"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify required-field validation errors are visible"
+      }
+    ],
+    "priority": "Low"
+  }
+]
