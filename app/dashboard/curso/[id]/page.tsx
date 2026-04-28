@@ -75,8 +75,8 @@ export default function CursoPage() {
     );
   }
 
-  const isApproved = compra.estado === 'activo';
-  const paymentStatus = compra.pago?.estado;
+  const isApproved = compra.estado === 'ACTIVO';
+  const paymentStatus = compra.pago?.estado as string | undefined;
   const hasPaidProof = !!compra.pago;
 
   return (
@@ -120,16 +120,16 @@ export default function CursoPage() {
               </p>
               <p
                 className={`text-lg font-semibold ${
-                  paymentStatus === 'aprobado'
+                  paymentStatus === 'APROBADO'
                     ? 'text-green-400'
-                    : paymentStatus === 'rechazado'
+                    : paymentStatus === 'RECHAZADO'
                     ? 'text-red-400'
                     : 'text-yellow-400'
                 }`}
               >
-                {paymentStatus === 'aprobado'
+                {paymentStatus === 'APROBADO'
                   ? '✅ Aprobado'
-                  : paymentStatus === 'rechazado'
+                  : paymentStatus === 'RECHAZADO'
                   ? '❌ Rechazado'
                   : hasPaidProof
                   ? '⏳ Pendiente'
@@ -143,7 +143,7 @@ export default function CursoPage() {
         {isApproved ? (
           // Curso Aprobado - Aula Virtual
           <div className="space-y-6">
-            <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-700/50 rounded-lg p-8">
+            <div className="bg-linear-to-r from-green-900/30 to-emerald-900/30 border border-green-700/50 rounded-lg p-8">
               <h2 className="text-2xl font-bold text-green-400 mb-3">
                 🎓 ¡Bienvenido al Aula Virtual!
               </h2>

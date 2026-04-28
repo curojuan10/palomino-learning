@@ -18,7 +18,9 @@ export async function obtenerRolUsuario() {
       .single();
 
     if (error) throw error;
-    return data?.roles?.nombre || 'CLIENTE';
+    const roles = data?.roles as { nombre: string } | { nombre: string }[] | null;
+    const nombre = Array.isArray(roles) ? roles[0]?.nombre : roles?.nombre;
+    return nombre || 'CLIENTE';
   } catch (err) {
     return 'CLIENTE';
   }
@@ -208,7 +210,7 @@ export async function getPagosPendientes() {
   const { data: pagos, error } = await client
     .from('pagos')
     .select('id, estado, monto, comprobante_url, compra_id')
-    .eq('estado', 'pendiente');
+    .eq('estado', 'PENDIENTE');
 
   if (error) throw error;
   if (!pagos || pagos.length === 0) return [];

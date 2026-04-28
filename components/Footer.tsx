@@ -97,7 +97,7 @@ export default function Footer() {
                 href="https://instagram.com/palominomachine"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                className="w-10 h-10 bg-linear-to-br from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
                 title="Instagram"
                 aria-label="Síguenos en Instagram"
               >
@@ -126,7 +126,7 @@ export default function Footer() {
         {/* Divider */}
         <div className="border-t border-slate-800 pt-8">
           {/* Newsletter */}
-          <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-lg p-6 mb-8">
+          <div className="bg-linear-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-lg p-6 mb-8">
             <h4 className="text-white font-semibold mb-2">Suscríbete a nuestro Newsletter</h4>
             <p className="text-sm text-slate-400 mb-4">Recibe las últimas noticias sobre cursos y promociones especiales.</p>
             <div className="flex gap-2">

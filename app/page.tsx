@@ -127,9 +127,8 @@ export default function Home() {
 
   return (
     <main className="bg-slate-950 text-white overflow-hidden">
-      {/* Hero Section - Optimized Design */}
+      {/* Hero Section */}
       <section className="relative min-h-[85vh] px-4 py-20 overflow-hidden flex items-center">
-        {/* Background gradients */}
         <div className="absolute top-0 left-0 w-full h-full">
           <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
           <div className="absolute top-40 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
@@ -137,14 +136,16 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-            {/* Left content */}
             <div className="flex flex-col justify-center">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/50 rounded-full mb-6 w-fit">
                 <span className="text-blue-400 text-sm font-semibold">🚀 PLATAFORMA DE CURSOS ONLINE</span>
               </div>
 
               <h1 className="text-5xl lg:text-7xl font-black mb-6 leading-tight">
-                Prepárate para un <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Futuro Dominado por la Tecnología</span>
+                Prepárate para un{' '}
+                <span style={{ backgroundImage: 'linear-gradient(to right, #60a5fa, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                  Futuro Dominado por la Tecnología
+                </span>
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
@@ -153,8 +154,8 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link
-                  href="/auth/signup"
-                  className="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-bold text-lg transition transform hover:scale-105"
+                  href="/auth/register"
+                  className="px-10 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-bold text-lg transition transform hover:scale-105"
                 >
                   Comienza Gratis
                 </Link>
@@ -171,10 +172,9 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Right stats */}
             <div className="grid grid-cols-2 gap-4">
               {stats.map((stat, idx) => (
-                <div key={idx} className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition">
+                <div key={idx} className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition">
                   <div className="text-4xl mb-2">{stat.icon}</div>
                   <div className="text-3xl font-black mb-1">{stat.number}</div>
                   <div className="text-gray-400 text-sm">{stat.label}</div>
@@ -230,14 +230,12 @@ export default function Home() {
             {courses.map((course) => (
               <div
                 key={course.id}
-                className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500/50 transition group"
+                className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500/50 transition group"
               >
-                {/* Course image */}
-                <div className="bg-gradient-to-br from-slate-700 to-slate-800 h-48 flex items-center justify-center text-8xl group-hover:scale-110 transition">
+                <div className="bg-linear-to-br from-slate-700 to-slate-800 h-48 flex items-center justify-center text-8xl group-hover:scale-110 transition">
                   {course.image}
                 </div>
 
-                {/* Content */}
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-xs font-bold text-blue-400 bg-blue-400/20 px-3 py-1 rounded-full">
@@ -305,14 +303,14 @@ export default function Home() {
 
       {/* CTA Final */}
       <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center">
+        <div className="max-w-4xl mx-auto bg-linear-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center">
           <h2 className="text-4xl font-black mb-4">¿Listo para Transformar tu Carrera?</h2>
           <p className="text-xl mb-8 opacity-90">
             Únete a miles de estudiantes aprendiendo hoy
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/auth/signup"
+              href="/auth/register"
               className="px-10 py-4 bg-white text-blue-600 hover:bg-gray-100 rounded-lg font-bold text-lg transition"
             >
               Crear Mi Cuenta Gratis
@@ -329,47 +327,3 @@ export default function Home() {
     </main>
   );
 }
-
-      {/* Why Choose Us */}
-      <section className="py-20 px-4 bg-white/5 border-y border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">¿Por qué elegir Palomino?</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">📚</div>
-              <h3 className="text-2xl font-bold mb-3">Contenido Premium</h3>
-              <p className="text-gray-400">Cursos diseñados por profesionales con años de experiencia en la industria.</p>
-            </div>
-
-            <div className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">💰</div>
-              <h3 className="text-2xl font-bold mb-3">Precios Accesibles</h3>
-              <p className="text-gray-400">Invierte en tu educación sin quebrar el banco. Paga solo una vez.</p>
-            </div>
-
-            <div className="bg-gradient-to-br from-pink-900/30 to-pink-800/30 border border-pink-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">⚡</div>
-              <h3 className="text-2xl font-bold mb-3">Acceso Inmediato</h3>
-              <p className="text-gray-400">Una vez aprobado tu pago, acceso instantáneo a todo el contenido del curso.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl font-bold mb-6">Comienza tu Viaje de Aprendizaje</h2>
-          <p className="text-xl text-gray-400 mb-8">
-            Únete a miles de estudiantes que ya están aprendiendo y avanzando en sus carreras.
-          </p>
-          <Link
-            href="/auth/register"
-            className="inline-block px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-bold text-xl transition transform hover:scale-105"
-          >
-            Registrarse Ahora - ¡Es Gratis!
-          </Link>
-        </div>
-      </section>
-    

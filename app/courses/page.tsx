@@ -95,7 +95,7 @@ export default function CoursesPage() {
                   className="w-full h-40 object-cover"
                 />
               ) : (
-                <div className="w-full h-40 bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center text-4xl">
+                <div className="w-full h-40 bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-4xl">
                   📚
                 </div>
               )}
@@ -127,7 +127,7 @@ export default function CoursesPage() {
 
                   <button
                     onClick={() => handleComprar(curso)}
-                    className="w-full py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-bold text-center text-sm transition transform hover:scale-105"
+                    className="w-full py-2 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-bold text-center text-sm transition transform hover:scale-105"
                   >
                     ✅ Comprar Ahora
                   </button>
@@ -139,7 +139,7 @@ export default function CoursesPage() {
       )}
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-slate-800 rounded-xl p-12 text-center">
+      <div className="bg-linear-to-r from-blue-900/30 to-purple-900/30 border border-slate-800 rounded-xl p-12 text-center">
         <h2 className="text-3xl font-black text-white mb-4">¿Necesitas ayuda?</h2>
         <p className="text-gray-400 mb-8">
           Contáctanos si tienes dudas sobre nuestros cursos o necesitas más información

@@ -106,7 +106,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link
           href="/admin/cursos/nuevo"
-          className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-lg transition transform hover:scale-105"
+          className="bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white p-6 rounded-lg transition transform hover:scale-105"
         >
           <div className="text-3xl mb-2">➕</div>
           <h3 className="font-bold text-lg">Crear Nuevo Curso</h3>
@@ -115,7 +115,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/cursos"
-          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-lg transition transform hover:scale-105"
+          className="bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-6 rounded-lg transition transform hover:scale-105"
         >
           <div className="text-3xl mb-2">📚</div>
           <h3 className="font-bold text-lg">Ver Cursos</h3>
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/pagos"
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-lg transition transform hover:scale-105"
+          className="bg-linear-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white p-6 rounded-lg transition transform hover:scale-105"
         >
           <div className="text-3xl mb-2">💳</div>
           <h3 className="font-bold text-lg">Revisar Pagos</h3>

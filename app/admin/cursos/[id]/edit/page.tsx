@@ -281,7 +281,7 @@ export default function EditarCurso() {
           <button
             type="submit"
             disabled={submitting}
-            className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? '⏳ Guardando...' : '✅ Guardar Cambios'}
           </button>

@@ -53,7 +53,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
+    <main className="bg-linear-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-32 px-4 pt-40 overflow-hidden">
         {/* Decorative elements */}
@@ -67,7 +67,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-6xl md:text-7xl font-black mb-6 leading-tight">
-              Aprende <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Nuevas Habilidades</span>{' '}
+              Aprende <span style={{ backgroundImage: 'linear-gradient(to right, #60a5fa, #c084fc, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Nuevas Habilidades</span>{' '}
               Hoy
             </h1>
 
@@ -78,12 +78,12 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link
                 href="/auth/register"
-                className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg font-bold text-lg transition transform hover:scale-105"
+                className="px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg font-bold text-lg transition transform hover:scale-105"
               >
                 Comenzar Ahora
               </Link>
               <Link
-                href="/home/courses"
+                href="/courses"
                 className="px-8 py-4 border-2 border-gray-400 hover:border-white rounded-lg font-bold text-lg transition hover:bg-white/10"
               >
                 Explorar Cursos
@@ -121,7 +121,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-5xl font-bold mb-2">Cursos Destacados</h2>
               <p className="text-gray-400">Los más populares esta semana</p>
             </div>
-            <Link href="/home/courses" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2">
+            <Link href="/courses" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-2">
               Ver todos <span>→</span>
             </Link>
           </div>
@@ -134,7 +134,7 @@ export default function Home() {
               >
                 {/* Image */}
                 <div
-                  className={`h-40 bg-gradient-to-br ${course.color} flex items-center justify-center text-7xl relative overflow-hidden`}
+                  className={`h-40 bg-linear-to-br ${course.color} flex items-center justify-center text-7xl relative overflow-hidden`}
                 >
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition"></div>
                   {course.image}
@@ -162,7 +162,7 @@ export default function Home() {
                     </div>
                     <Link
                       href="/auth/register"
-                      className="w-full py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold text-center transition transform hover:scale-105"
+                      className="w-full py-2 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-semibold text-center transition transform hover:scale-105"
                     >
                       Inscribirse
                     </Link>
@@ -180,19 +180,19 @@ export default function Home() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">¿Por qué elegir Palomino?</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/20 rounded-xl p-8">
+            <div className="bg-linear-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/20 rounded-xl p-8">
               <div className="text-5xl mb-4">📚</div>
               <h3 className="text-2xl font-bold mb-3">Contenido Premium</h3>
               <p className="text-gray-400">Cursos diseñados por profesionales con años de experiencia en la industria.</p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/20 rounded-xl p-8">
+            <div className="bg-linear-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/20 rounded-xl p-8">
               <div className="text-5xl mb-4">💰</div>
               <h3 className="text-2xl font-bold mb-3">Precios Accesibles</h3>
               <p className="text-gray-400">Invierte en tu educación sin quebrar el banco. Paga solo una vez.</p>
             </div>
 
-            <div className="bg-gradient-to-br from-pink-900/30 to-pink-800/30 border border-pink-500/20 rounded-xl p-8">
+            <div className="bg-linear-to-br from-pink-900/30 to-pink-800/30 border border-pink-500/20 rounded-xl p-8">
               <div className="text-5xl mb-4">⚡</div>
               <h3 className="text-2xl font-bold mb-3">Acceso Inmediato</h3>
               <p className="text-gray-400">Una vez aprobado tu pago, acceso instantáneo a todo el contenido del curso.</p>
@@ -210,7 +210,7 @@ export default function Home() {
           </p>
           <Link
             href="/auth/register"
-            className="inline-block px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-bold text-xl transition transform hover:scale-105"
+            className="inline-block px-10 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-bold text-xl transition transform hover:scale-105"
           >
             Registrarse Ahora - ¡Es Gratis!
           </Link>
