@@ -52,8 +52,13 @@ export default function RegisterPage() {
 
     if (result.success) {
       setSuccess('¡Registrado exitosamente! Redirigiendo a login...');
+      
+      // 🔧 BUG 1 & 2: Si hay pending_action, pasar parámetro de redirección
+      const pendingAction = typeof window !== 'undefined' ? sessionStorage.getItem('pending_action') : null;
+      const redirectUrl = pendingAction ? '/auth/login?redirect=pago' : '/auth/login';
+      
       setTimeout(() => {
-        router.push('/auth/login');
+        router.push(redirectUrl);
       }, 2000);
     } else {
       setError(result.error || 'Error al registrar');

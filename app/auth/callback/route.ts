@@ -76,8 +76,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin', request.url));
     } else {
       // Cliente (rol_id === 2)
-      console.log('→ Redirigiendo a /courses (rol_id=' + rolId + ')');
-      return NextResponse.redirect(new URL('/courses', request.url));
+      console.log('→ Redirigiendo a /dashboard (rol_id=' + rolId + ')');
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   } catch (error) {
     console.error('Callback error:', error);

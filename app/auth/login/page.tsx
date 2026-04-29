@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { login, getUserRole } from '@/lib/auth';
 
@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,21 +44,52 @@ export default function LoginPage() {
       if (result.user) {
         console.log('Sesión iniciada para usuario:', result.user.id);
         
+        // 🔧 BUG 2 FIX + Mejora: Verificar intención pendiente (pending_action o pending_purchase)
+        const redirectParam = searchParams.get('redirect');
+        const pendingActionJson = typeof window !== 'undefined' ? sessionStorage.getItem('pending_action') : null;
+        const pendingPurchase = typeof window !== 'undefined' ? sessionStorage.getItem('pending_purchase') : null;
+        
+        let pendingAction = null;
+        if (pendingActionJson) {
+          try {
+            pendingAction = JSON.parse(pendingActionJson);
+          } catch (e) {
+            console.warn('Error parsing pending_action:', e);
+          }
+        }
+        
         // Consultar rol en la tabla Usuarios
         const roleResult = await getUserRole(result.user.id);
         const rolId = roleResult.rol_id;
         
         console.log('rol_id obtenido:', rolId);
+        console.log('redirect param:', redirectParam);
+        console.log('pending_action:', pendingAction);
+        console.log('pending_purchase:', pendingPurchase);
         
-        // Redirección inteligente según rol_id
+        // Lógica de redirección mejorada
         if (rolId === 1) {
           // Admin
           console.log('→ Redirigiendo a /admin (rol_id=1)');
           router.push('/admin');
+        } else if (pendingAction?.type === 'purchase' && pendingAction?.id) {
+          // Cliente con intención de comprar: ir al dashboard (donde puede comprar desde catálogo)
+          console.log('→ Redirigiendo a dashboard (pending_action type: purchase)');
+          sessionStorage.removeItem('pending_action');
+          router.push('/dashboard');
+        } else if (pendingAction?.type === 'view_course' && pendingAction?.id) {
+          // Cliente con intención de ver info: ir al dashboard
+          console.log('→ Redirigiendo a dashboard (pending_action type: view_course)');
+          sessionStorage.removeItem('pending_action');
+          router.push('/dashboard');
+        } else if (pendingPurchase) {
+          // Cliente con compra pendiente: al dashboard (compatibilidad con BUG 1)
+          console.log('→ Redirigiendo a dashboard (pending_purchase legacy)');
+          router.push('/dashboard');
         } else {
-          // Cliente (rol_id === 2)
-          console.log('→ Redirigiendo a /courses (rol_id=' + rolId + ')');
-          router.push('/courses');
+          // Cliente sin intención pendiente: al dashboard
+          console.log('→ Redirigiendo a /dashboard (rol_id=' + rolId + ')');
+          router.push('/dashboard');
         }
       }
     } catch (err: any) {

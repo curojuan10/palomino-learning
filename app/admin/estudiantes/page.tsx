@@ -60,16 +60,16 @@ export default function AdminEstudiantes() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">👥 Estudiantes</h1>
-        <p className="text-gray-400 mt-1">Total: {estudiantes.length} usuario{estudiantes.length !== 1 ? 's' : ''} registrado{estudiantes.length !== 1 ? 's' : ''}</p>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white">👥 Estudiantes</h1>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">Total: {estudiantes.length} usuario{estudiantes.length !== 1 ? 's' : ''} registrado{estudiantes.length !== 1 ? 's' : ''}</p>
       </div>
 
       {/* Students List */}
       {estudiantes.length === 0 ? (
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 sm:p-12 text-center">
           <p className="text-gray-400 text-lg">No hay estudiantes registrados aún</p>
         </div>
       ) : (
@@ -79,11 +79,11 @@ export default function AdminEstudiantes() {
             <table className="w-full text-sm">
               <thead className="bg-slate-900 border-b border-slate-700">
                 <tr className="text-gray-400 text-left">
-                  <th className="py-4 px-6 font-semibold">Nombre</th>
-                  <th className="py-4 px-6 font-semibold">Email</th>
-                  <th className="py-4 px-6 font-semibold">Rol</th>
-                  <th className="py-4 px-6 font-semibold">Cursos Comprados</th>
-                  <th className="py-4 px-6 font-semibold">Fecha Registro</th>
+                  <th className="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm">Nombre</th>
+                  <th className="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm">Email</th>
+                  <th className="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm">Rol</th>
+                  <th className="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm">Cursos</th>
+                  <th className="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-xs sm:text-sm">Registro</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,20 +92,20 @@ export default function AdminEstudiantes() {
                     key={est.id}
                     className={`${
                       idx % 2 === 0 ? 'bg-slate-800' : 'bg-slate-750'
-                    } border-b border-slate-700 hover:bg-slate-700 transition`}
+                    } border-b border-slate-700 hover:bg-slate-700 transition text-xs sm:text-sm`}
                   >
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs sm:text-sm shrink-0">
                           {est.nombre.charAt(0).toUpperCase()}
                         </div>
-                        <span className="text-white font-semibold">{est.nombre}</span>
+                        <span className="text-white font-semibold truncate">{est.nombre}</span>
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-gray-300">{est.email}</td>
-                    <td className="py-4 px-6">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6 text-gray-300 truncate">{est.email}</td>
+                    <td className="py-3 sm:py-4 px-4 sm:px-6">
                       <span
-                        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                           est.rol_id === 1
                             ? 'bg-purple-900 text-purple-200'
                             : 'bg-blue-900 text-blue-200'
@@ -114,10 +114,10 @@ export default function AdminEstudiantes() {
                         {est.rol_id === 1 ? '⚙️ Admin' : '👤 Cliente'}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-white">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6 text-white font-semibold">
                       {est.compras?.length || 0}
                     </td>
-                    <td className="py-4 px-6 text-gray-400 text-xs">
+                    <td className="py-3 sm:py-4 px-4 sm:px-6 text-gray-400 text-xs">
                       {new Date(est.created_at).toLocaleDateString('es-PE')}
                     </td>
                   </tr>
@@ -127,22 +127,22 @@ export default function AdminEstudiantes() {
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden space-y-4 p-4">
+          <div className="md:hidden space-y-3 sm:space-y-4 p-3 sm:p-4">
             {estudiantes.map((est: any) => (
               <div
                 key={est.id}
-                className="bg-slate-700 border border-slate-600 rounded-lg p-4 space-y-3"
+                className="bg-slate-700 border border-slate-600 rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3"
               >
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0">
                     {est.nombre.charAt(0).toUpperCase()}
                   </div>
-                  <div className="flex-1">
-                    <p className="text-white font-semibold">{est.nombre}</p>
-                    <p className="text-gray-400 text-sm">{est.email}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-semibold text-sm truncate">{est.nombre}</p>
+                    <p className="text-gray-400 text-xs truncate">{est.email}</p>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                    className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 ${
                       est.rol_id === 1
                         ? 'bg-purple-900 text-purple-200'
                         : 'bg-blue-900 text-blue-200'
@@ -151,7 +151,7 @@ export default function AdminEstudiantes() {
                     {est.rol_id === 1 ? 'Admin' : 'Cliente'}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-xs sm:text-sm gap-4">
                   <div>
                     <p className="text-gray-400">Cursos Comprados</p>
                     <p className="text-white font-bold">{est.compras?.length || 0}</p>
@@ -170,20 +170,20 @@ export default function AdminEstudiantes() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-          <p className="text-gray-400 text-sm">Total Estudiantes</p>
-          <p className="text-2xl font-bold text-white mt-1">{estudiantes.length}</p>
+          <p className="text-gray-400 text-xs sm:text-sm">Total Estudiantes</p>
+          <p className="text-xl sm:text-2xl font-bold text-white mt-2">{estudiantes.length}</p>
         </div>
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-          <p className="text-gray-400 text-sm">Admins</p>
-          <p className="text-2xl font-bold text-purple-400 mt-1">
+          <p className="text-gray-400 text-xs sm:text-sm">Admins</p>
+          <p className="text-xl sm:text-2xl font-bold text-purple-400 mt-2">
             {estudiantes.filter((e: any) => e.rol_id === 1).length}
           </p>
         </div>
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-          <p className="text-gray-400 text-sm">Clientes</p>
-          <p className="text-2xl font-bold text-blue-400 mt-1">
+          <p className="text-gray-400 text-xs sm:text-sm">Clientes</p>
+          <p className="text-xl sm:text-2xl font-bold text-blue-400 mt-2">
             {estudiantes.filter((e: any) => e.rol_id !== 1).length}
           </p>
         </div>

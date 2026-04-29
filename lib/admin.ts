@@ -10,26 +10,27 @@ export async function obtenerRolUsuario() {
     const { data: { user }, error: errorAuth } = await client.auth.getUser();
     if (errorAuth || !user) throw new Error('No autenticado');
 
-    // Obtener rol del usuario
+    // Obtener rol_id del usuario directamente
     const { data, error } = await client
       .from('usuarios')
-      .select('rol_id, roles(nombre)')
+      .select('rol_id')
       .eq('id', user.id)
       .single();
 
     if (error) throw error;
-    const roles = data?.roles as { nombre: string } | { nombre: string }[] | null;
-    const nombre = Array.isArray(roles) ? roles[0]?.nombre : roles?.nombre;
-    return nombre || 'CLIENTE';
+    
+    // Retornar el rol_id (1 = ADMIN, 2 = CLIENTE)
+    return data?.rol_id || 2;
   } catch (err) {
-    return 'CLIENTE';
+    console.error('Error obteniendo rol:', err);
+    return 2; // CLIENTE por defecto
   }
 }
 
 // Verificar si el usuario es admin
 export async function esAdmin() {
-  const rol = await obtenerRolUsuario();
-  return rol === 'ADMIN';
+  const rolId = await obtenerRolUsuario();
+  return rolId === 1; // 1 es ADMIN
 }
 
 // Obtener todos los cursos
@@ -128,6 +129,13 @@ export async function actualizarCurso(
   }
 ) {
   const client = createClient();
+  
+  // Verificar que el usuario sea admin
+  const admin = await esAdmin();
+  if (!admin) {
+    throw new Error('No tienes permiso para actualizar cursos. Solo administradores pueden actualizar cursos.');
+  }
+
   const { data, error } = await client
     .from('cursos')
     .update(courseData)
@@ -135,17 +143,58 @@ export async function actualizarCurso(
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    console.error('Supabase update error:', error);
+    throw new Error(`Error al actualizar: ${error.message}`);
+  }
   return data;
 }
 
-// Eliminar curso
+// Eliminar curso (o desactivar si tiene compras)
 export async function eliminarCurso(id: string) {
   const client = createClient();
+  
+  // Verificar que el usuario sea admin
+  const admin = await esAdmin();
+  if (!admin) {
+    throw new Error('No tienes permiso para eliminar cursos. Solo administradores pueden eliminar cursos.');
+  }
+
+  // Verificar si hay compras asociadas a este curso
+  const { data: compras, error: errorCompras } = await client
+    .from('compras')
+    .select('id')
+    .eq('curso_id', id);
+
+  if (errorCompras) {
+    console.error('Error verificando compras:', errorCompras);
+    throw new Error('Error al verificar compras del curso');
+  }
+
+  // Si hay compras, desactivar el curso en lugar de eliminarlo
+  if (compras && compras.length > 0) {
+    const { error: updateError } = await client
+      .from('cursos')
+      .update({ estado: false })
+      .eq('id', id);
+
+    if (updateError) {
+      console.error('Supabase update error:', updateError);
+      throw new Error(`Curso desactivado (tiene ${compras.length} compra${compras.length !== 1 ? 's' : ''} asociada${compras.length !== 1 ? 's' : ''})`);
+    }
+    
+    return { deleted: false, deactivated: true, message: `Curso desactivado. No se puede eliminar porque tiene ${compras.length} compra${compras.length !== 1 ? 's' : ''} asociada${compras.length !== 1 ? 's' : ''}.` };
+  }
+
+  // Si no hay compras, eliminar el curso
   const { error } = await client.from('cursos').delete().eq('id', id);
 
-  if (error) throw error;
-  return true;
+  if (error) {
+    console.error('Supabase delete error:', error);
+    throw new Error(`Error al eliminar: ${error.message}`);
+  }
+  
+  return { deleted: true, deactivated: false, message: 'Curso eliminado correctamente' };
 }
 
 // Subir imagen a Storage con manejo mejorado de errores

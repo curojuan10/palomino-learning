@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { crearCompra } from '@/lib/compras';
 import { crearPago, subirComprobanteStorage } from '@/lib/pagos';
-import { Upload, Check, AlertCircle } from 'lucide-react';
+import { obtenerDatoPagoPorMetodo } from '@/lib/pago-config';
+import { Upload, Check, AlertCircle, Copy } from 'lucide-react';
 
 interface ModalCompraProps {
   isOpen: boolean;
@@ -30,6 +31,8 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [monto, setMonto] = useState('');
   const [metodo, setMetodo] = useState('transferencia');
+  const [datoPago, setDatoPago] = useState<any>(null);
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
 
   // Validar que curso tenga datos
   if (!curso?.id || !curso?.titulo) {
@@ -43,6 +46,23 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
     }
   }, [curso?.precio]);
 
+  // 🔧 BUG 3: Cargar datos de pago cuando cambia el método
+  useEffect(() => {
+    const cargarDatosPago = async () => {
+      try {
+        const datos = await obtenerDatoPagoPorMetodo(metodo);
+        setDatoPago(datos);
+        console.log('📍 Datos de pago cargados para método', metodo, ':', datos);
+      } catch (err) {
+        console.error('Error al cargar datos de pago:', err);
+      }
+    };
+
+    if (step === 'payment') {
+      cargarDatosPago();
+    }
+  }, [metodo, step]);
+
   if (!isOpen) return null;
 
   // Log de debugging
@@ -53,12 +73,30 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
     userIdType: typeof userId,
   });
 
+  // 🔧 BUG 3: Copiar datos al portapapeles
+  const handleCopyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedToClipboard(true);
+    setTimeout(() => setCopiedToClipboard(false), 2000);
+  };
+
   // PASO A: Crear compra con estado 'pendiente'
   const handleCrearCompra = async () => {
     console.log('🔍 DEBUG handleCrearCompra:', { userId, cursoId: curso.id, cursoIdType: typeof curso.id });
     
     if (!userId) {
-      router.push('/auth/login');
+      // 🔧 BUG 1 FIX: Guardar curso en sessionStorage para recuperarlo después del login
+      const cursoParaGuardar = {
+        id: curso.id,
+        titulo: curso.titulo,
+        precio: curso.precio,
+        imagen_url: curso.imagen_url,
+      };
+      sessionStorage.setItem('pending_purchase', JSON.stringify(cursoParaGuardar));
+      console.log('💾 Curso guardado en sessionStorage:', cursoParaGuardar);
+      
+      // Redirigir al login con parámetro de redirección
+      router.push('/auth/login?redirect=pago');
       return;
     }
 
@@ -168,8 +206,8 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 w-full max-w-md shadow-2xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto my-8">
         
         {/* PASO 1: CONFIRMACIÓN DE COMPRA */}
         {step === 'confirmation' && (
@@ -247,68 +285,159 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
         {step === 'payment' && (
           <>
             {/* Header */}
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-white mb-2">💳 Datos de Pago</h2>
-              <p className="text-gray-400">Completa tu información de pago</p>
+            <div className="text-center mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-1">💳 Datos de Pago</h2>
+              <p className="text-gray-400 text-sm">Selecciona tu método y confirma</p>
             </div>
 
             {/* Error */}
             {error && (
-              <div className="mb-4 p-3 bg-red-900 border border-red-700 text-red-200 rounded-lg text-sm flex gap-2">
-                <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />
+              <div className="mb-3 p-2 bg-red-900 border border-red-700 text-red-200 rounded-lg text-xs flex gap-2">
+                <AlertCircle size={14} className="flex-shrink-0 mt-0.5" />
                 {error}
               </div>
             )}
 
             {/* Resumen */}
-            <div className="bg-slate-700 rounded-lg p-4 mb-6">
-              <p className="text-gray-400 text-sm mb-2">Curso</p>
-              <p className="text-white font-bold">{curso.titulo}</p>
-              <p className="text-green-400 text-lg font-bold mt-2">S/{curso.precio}</p>
+            <div className="bg-slate-700 rounded-lg p-3 mb-4">
+              <p className="text-gray-400 text-xs mb-1">Curso</p>
+              <p className="text-white font-bold text-sm line-clamp-2">{curso.titulo}</p>
+              <p className="text-green-400 font-bold mt-2">S/{curso.precio}</p>
             </div>
 
             {/* Métodos de Pago */}
-            <div className="mb-6 space-y-3">
-              <label className="block text-white font-semibold mb-3">Método de Pago</label>
+            <div className="mb-4">
+              <label className="block text-white font-semibold text-sm mb-2">Método de Pago</label>
               
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <button
                   onClick={() => setMetodo('transferencia')}
-                  className={`w-full p-3 rounded-lg text-left transition ${
+                  className={`w-full p-2 rounded-lg text-left transition text-sm font-medium ${
                     metodo === 'transferencia'
                       ? 'bg-blue-600 border border-blue-500 text-white'
                       : 'bg-slate-700 border border-slate-600 text-gray-300 hover:bg-slate-600'
                   }`}
                 >
-                  🏦 <span className="font-semibold">Transferencia Bancaria</span>
-                  <p className="text-sm text-gray-300 mt-1">BCP, BBVA, Scotiabank, Interbank</p>
+                  🏦 Transferencia Bancaria
                 </button>
 
                 <button
                   onClick={() => setMetodo('yape')}
-                  className={`w-full p-3 rounded-lg text-left transition ${
+                  className={`w-full p-2 rounded-lg text-left transition text-sm font-medium ${
                     metodo === 'yape'
                       ? 'bg-blue-600 border border-blue-500 text-white'
                       : 'bg-slate-700 border border-slate-600 text-gray-300 hover:bg-slate-600'
                   }`}
                 >
-                  📱 <span className="font-semibold">Yape</span>
-                  <p className="text-sm text-gray-300 mt-1">Envía dinero al instante</p>
+                  📱 Yape
                 </button>
 
                 <button
                   onClick={() => setMetodo('plin')}
-                  className={`w-full p-3 rounded-lg text-left transition ${
+                  className={`w-full p-2 rounded-lg text-left transition text-sm font-medium ${
                     metodo === 'plin'
                       ? 'bg-blue-600 border border-blue-500 text-white'
                       : 'bg-slate-700 border border-slate-600 text-gray-300 hover:bg-slate-600'
                   }`}
                 >
-                  💰 <span className="font-semibold">Plin</span>
-                  <p className="text-sm text-gray-300 mt-1">Sistema de pagos integrado</p>
+                  💰 Plin
                 </button>
               </div>
             </div>
+
+            {/* 🔧 BUG 3: Datos de Pago */}
+            {datoPago && (
+              <div className="mb-4 bg-blue-900/30 border border-blue-700 rounded-lg p-3 max-h-48 overflow-y-auto">
+                <p className="text-blue-200 font-semibold mb-2 text-sm">📍 Datos para el Pago:</p>
+                
+                {metodo === 'yape' && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2 bg-slate-800 rounded p-2">
+                      <div className="min-w-0">
+                        <p className="text-gray-400 text-xs">Número</p>
+                        <p className="text-white font-mono font-bold text-xs break-all">{datoPago.numero}</p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyToClipboard(datoPago.numero)}
+                        className="p-1 hover:bg-slate-700 rounded transition shrink-0"
+                        title="Copiar"
+                      >
+                        <Copy size={14} className={copiedToClipboard ? 'text-green-400' : 'text-gray-400'} />
+                      </button>
+                    </div>
+                    <div className="bg-slate-800 rounded p-2">
+                      <p className="text-gray-400 text-xs">Titular</p>
+                      <p className="text-white text-xs truncate">{datoPago.titular}</p>
+                    </div>
+                  </div>
+                )}
+
+                {metodo === 'transferencia' && (
+                  <div className="space-y-1.5">
+                    <div className="bg-slate-800 rounded p-2">
+                      <p className="text-gray-400 text-xs">Banco</p>
+                      <p className="text-white text-xs font-bold">{datoPago.banco}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 bg-slate-800 rounded p-2">
+                      <div className="min-w-0">
+                        <p className="text-gray-400 text-xs">Cuenta</p>
+                        <p className="text-white font-mono font-bold text-xs break-all">{datoPago.numero}</p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyToClipboard(datoPago.numero)}
+                        className="p-1 hover:bg-slate-700 rounded transition shrink-0"
+                        title="Copiar"
+                      >
+                        <Copy size={14} className={copiedToClipboard ? 'text-green-400' : 'text-gray-400'} />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 bg-slate-800 rounded p-2">
+                      <div className="min-w-0">
+                        <p className="text-gray-400 text-xs">CCI</p>
+                        <p className="text-white font-mono font-bold text-xs break-all">{datoPago.cci}</p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyToClipboard(datoPago.cci)}
+                        className="p-1 hover:bg-slate-700 rounded transition shrink-0"
+                        title="Copiar"
+                      >
+                        <Copy size={14} className={copiedToClipboard ? 'text-green-400' : 'text-gray-400'} />
+                      </button>
+                    </div>
+                    <div className="bg-slate-800 rounded p-2">
+                      <p className="text-gray-400 text-xs">Titular</p>
+                      <p className="text-white text-xs truncate">{datoPago.titular}</p>
+                    </div>
+                  </div>
+                )}
+
+                {metodo === 'plin' && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between gap-2 bg-slate-800 rounded p-2">
+                      <div className="min-w-0">
+                        <p className="text-gray-400 text-xs">Número</p>
+                        <p className="text-white font-mono font-bold text-xs break-all">{datoPago.numero}</p>
+                      </div>
+                      <button
+                        onClick={() => handleCopyToClipboard(datoPago.numero)}
+                        className="p-1 hover:bg-slate-700 rounded transition shrink-0"
+                        title="Copiar"
+                      >
+                        <Copy size={14} className={copiedToClipboard ? 'text-green-400' : 'text-gray-400'} />
+                      </button>
+                    </div>
+                    <div className="bg-slate-800 rounded p-2">
+                      <p className="text-gray-400 text-xs">Titular</p>
+                      <p className="text-white text-xs truncate">{datoPago.titular}</p>
+                    </div>
+                  </div>
+                )}
+
+                {copiedToClipboard && (
+                  <p className="text-green-400 text-xs mt-1">✅ Copiado</p>
+                )}
+              </div>
+            )}
 
             {/* Monto */}
             <div className="mb-6">
@@ -452,13 +581,20 @@ export default function ModalCompra({ isOpen, onClose, curso, userId }: ModalCom
               </p>
               <div className="flex gap-3">
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    // 🔧 Establecer flag para mostrar banner en dashboard
+                    sessionStorage.setItem('purchase_completed', 'true');
+                    router.push('/dashboard');
+                    onClose();
+                  }}
                   className="flex-1 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg transition"
                 >
                   Cerrar
                 </button>
                 <button
                   onClick={() => {
+                    // 🔧 Establecer flag para mostrar banner en dashboard
+                    sessionStorage.setItem('purchase_completed', 'true');
                     router.push('/dashboard');
                     onClose();
                   }}

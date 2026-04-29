@@ -25,15 +25,26 @@ export default function AdminCursos() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este curso?')) {
+    if (confirm('¿Estás seguro de que deseas eliminar este curso? Esta acción no se puede deshacer.')) {
       setDeletingId(id);
       try {
-        await eliminarCurso(id);
-        setCursos(cursos.filter(c => c.id !== id));
-        alert('Curso eliminado correctamente');
-      } catch (error) {
+        const result = await eliminarCurso(id);
+        
+        if (result.deleted) {
+          // Curso eliminado completamente
+          setCursos(cursos.filter(c => c.id !== id));
+          alert('✅ ' + result.message);
+        } else if (result.deactivated) {
+          // Curso desactivado (tiene compras asociadas)
+          setCursos(cursos.map(c => 
+            c.id === id ? { ...c, estado: false } : c
+          ));
+          alert('⚠️ ' + result.message);
+        }
+      } catch (error: any) {
         console.error('Error deleting curso:', error);
-        alert('Error al eliminar el curso');
+        const errorMsg = error?.message || 'Error al eliminar el curso';
+        alert(`❌ ${errorMsg}`);
       } finally {
         setDeletingId(null);
       }
@@ -46,9 +57,10 @@ export default function AdminCursos() {
       setCursos(cursos.map(c => 
         c.id === id ? { ...c, estado: !estado } : c
       ));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating curso:', error);
-      alert('Error al actualizar el curso');
+      const errorMsg = error?.message || 'Error al actualizar el curso';
+      alert(`❌ ${errorMsg}`);
     }
   };
 
@@ -64,16 +76,16 @@ export default function AdminCursos() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">📚 Cursos</h1>
-          <p className="text-gray-400 mt-1">Total: {cursos.length} cursos</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">📚 Cursos</h1>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">Total: {cursos.length} curso{cursos.length !== 1 ? 's' : ''}</p>
         </div>
         <Link
           href="/admin/cursos/nuevo"
-          className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition flex items-center gap-2"
+          className="px-5 sm:px-6 py-2.5 sm:py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition flex items-center justify-center gap-2 text-sm sm:text-base"
         >
           ➕ Crear Curso
         </Link>
@@ -81,60 +93,60 @@ export default function AdminCursos() {
 
       {/* Cursos Grid */}
       {cursos.length === 0 ? (
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 sm:p-12 text-center">
           <p className="text-gray-400 text-lg mb-4">No hay cursos creados aún</p>
           <Link
             href="/admin/cursos/nuevo"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm sm:text-base"
           >
             Crear el primer curso
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {cursos.map((curso: any) => (
             <div
               key={curso.id}
-              className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500 transition"
+              className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500 transition flex flex-col h-full"
             >
               {/* Image */}
               {curso.imagen_url && (
                 <img
                   src={curso.imagen_url}
                   alt={curso.titulo}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-40 sm:h-48 object-cover"
                 />
               )}
 
               {/* Content */}
-              <div className="p-6 space-y-4">
+              <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 flex flex-col flex-1">
                 <div>
-                  <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-bold text-white flex-1">{curso.titulo}</h3>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="text-base sm:text-lg font-bold text-white line-clamp-2">{curso.titulo}</h3>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full font-semibold ${
+                      className={`text-xs px-2 py-1 rounded-full font-semibold whitespace-nowrap shrink-0 ${
                         curso.estado
                           ? 'bg-green-900 text-green-200'
                           : 'bg-red-900 text-red-200'
                       }`}
                     >
-                      {curso.estado ? '✅ Activo' : '❌ Inactivo'}
+                      {curso.estado ? '✅' : '❌'}
                     </span>
                   </div>
-                  <p className="text-gray-400 text-sm mt-2 line-clamp-2">
+                  <p className="text-gray-400 text-xs sm:text-sm line-clamp-2">
                     {curso.descripcion}
                   </p>
                 </div>
 
                 {/* Details */}
-                <div className="space-y-2 text-sm">
+                <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm border-t border-slate-700 pt-3 sm:pt-4">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Precio:</span>
                     <span className="text-white font-semibold">S/{curso.precio}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Categoría:</span>
-                    <span className="text-white">{curso.categoria}</span>
+                    <span className="text-white truncate">{curso.categoria}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Duración:</span>
@@ -143,10 +155,10 @@ export default function AdminCursos() {
                 </div>
 
                 {/* Actions */}
-                <div className="pt-4 border-t border-slate-700 space-y-2">
+                <div className="pt-3 sm:pt-4 border-t border-slate-700 space-y-2 mt-auto">
                   <button
                     onClick={() => toggleActivo(curso.id, curso.estado)}
-                    className={`w-full py-2 rounded-lg transition font-medium text-sm ${
+                    className={`w-full py-2 rounded-lg transition font-medium text-xs sm:text-sm ${
                       curso.estado
                         ? 'bg-red-900 hover:bg-red-800 text-red-200'
                         : 'bg-green-900 hover:bg-green-800 text-green-200'
@@ -157,16 +169,16 @@ export default function AdminCursos() {
                   <div className="grid grid-cols-2 gap-2">
                     <Link
                       href={`/admin/cursos/${curso.id}/edit`}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-center font-medium text-sm"
+                      className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-center font-medium text-xs sm:text-sm"
                     >
                       ✏️ Editar
                     </Link>
                     <button
                       onClick={() => handleDelete(curso.id)}
                       disabled={deletingId === curso.id}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium text-sm disabled:opacity-50"
+                      className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium text-xs sm:text-sm disabled:opacity-50"
                     >
-                      {deletingId === curso.id ? '⏳...' : '🗑️ Eliminar'}
+                      {deletingId === curso.id ? '⏳' : '🗑️'}
                     </button>
                   </div>
                 </div>

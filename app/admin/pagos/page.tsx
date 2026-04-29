@@ -67,11 +67,11 @@ export default function AdminPagos() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white">💳 Pagos Pendientes</h1>
-        <p className="text-gray-400 mt-1">
+        <h1 className="text-3xl sm:text-4xl font-bold text-white">💳 Pagos Pendientes</h1>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">
           {pagos.length > 0
             ? `${pagos.length} pago${pagos.length !== 1 ? 's' : ''} pendiente${pagos.length !== 1 ? 's' : ''} de revisar`
             : 'No hay pagos pendientes'}
@@ -80,50 +80,57 @@ export default function AdminPagos() {
 
       {/* Pagos List */}
       {pagos.length === 0 ? (
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
+        <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 sm:p-12 text-center">
           <p className="text-gray-400 text-lg">✅ No hay pagos pendientes de revisar</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 sm:space-y-6">
           {pagos.map((pago: any) => (
             <div
               key={pago.id}
               id={`pago-${pago.id}`}
-              className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-yellow-500 transition"
+              className="bg-slate-800 border border-slate-700 rounded-lg p-4 sm:p-6 hover:border-yellow-500 transition"
             >
               {/* Header */}
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-white">
+              <div className="mb-4 sm:mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white line-clamp-2">
                     {pago.compra?.curso?.titulo}
                   </h3>
-                  <p className="text-gray-400 text-sm mt-1">
-                    Estudiante: <span className="text-white font-semibold">{pago.compra?.usuario?.nombre}</span>
-                  </p>
-                  <p className="text-gray-400 text-sm">
-                    Email: <span className="text-blue-400">{pago.compra?.usuario?.email}</span>
-                  </p>
-                </div>
-
-                <div className="mt-4 md:mt-0 flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-green-400">
-                    S/{pago.monto}
-                  </span>
-                  <span className="text-yellow-400 bg-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
+                  <span className="bg-yellow-900 text-yellow-200 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
                     ⏳ Pendiente
                   </span>
                 </div>
+                <div className="space-y-1.5 text-xs sm:text-sm">
+                  <p className="text-gray-400">
+                    Estudiante: <span className="text-white font-semibold">{pago.compra?.usuario?.nombre}</span>
+                  </p>
+                  <p className="text-gray-400">
+                    Email: <span className="text-blue-400 break-all">{pago.compra?.usuario?.email}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-slate-700">
+                <span className="text-3xl sm:text-4xl font-black text-green-400">
+                  S/{pago.monto}
+                </span>
               </div>
 
               {/* Metadata */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 py-4 border-y border-slate-700">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6 py-4 border-y border-slate-700">
                 <div>
-                  <p className="text-gray-400 text-sm">ID Pago</p>
-                  <p className="text-white font-mono text-xs mt-1">{pago.id.slice(0, 8)}...</p>
+                  <p className="text-gray-400 text-xs">ID Pago</p>
+                  <p className="text-white font-mono text-xs mt-1 break-all">{String(pago.id).slice(0, 8)}...</p>
                 </div>
                 <div>
-                  <p className="text-gray-400 text-sm">Fecha de Solicitud</p>
-                  <p className="text-white text-sm mt-1">
+                  <p className="text-gray-400 text-xs">Método</p>
+                  <p className="text-white text-xs mt-1 capitalize">{pago.metodo_pago}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs">Solicitud</p>
+                  <p className="text-white text-xs mt-1">
                     {new Date(pago.created_at).toLocaleDateString('es-PE')}
                   </p>
                 </div>
@@ -131,54 +138,54 @@ export default function AdminPagos() {
 
               {/* Comprobante */}
               {pago.comprobante_url && (
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <p className="text-gray-400 text-sm font-semibold mb-3">📄 Comprobante de Pago</p>
                   <a
                     href={pago.comprobante_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block max-w-md"
+                    className="inline-block w-full sm:w-auto max-w-md"
                   >
                     <img
                       src={pago.comprobante_url}
                       alt="Comprobante"
-                      className="max-h-48 rounded-lg border border-slate-700 hover:border-blue-500 transition cursor-pointer"
+                      className="w-full max-h-48 rounded-lg border border-slate-700 hover:border-blue-500 transition cursor-pointer"
                     />
                   </a>
                 </div>
               )}
 
               {/* Actions */}
-              <div className="flex gap-3 pt-4 border-t border-slate-700">
+              <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-slate-700">
                 <button
                   onClick={() => handleAprobar(pago.id)}
                   disabled={processingId === pago.id}
-                  className="flex-1 py-3 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 py-2 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   {processingId === pago.id ? (
                     <>
-                      <span className="animate-spin">⏳</span>
-                      Procesando...
+                      <span className="animate-spin text-sm">⏳</span>
+                      <span className="hidden sm:inline">Procesando...</span>
                     </>
                   ) : (
                     <>
-                      ✅ Aprobar Pago
+                      ✅ <span className="hidden sm:inline">Aprobar</span>
                     </>
                   )}
                 </button>
                 <button
                   onClick={() => handleRechazar(pago.id)}
                   disabled={processingId === pago.id}
-                  className="flex-1 py-3 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 py-2 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   {processingId === pago.id ? (
                     <>
-                      <span className="animate-spin">⏳</span>
-                      Procesando...
+                      <span className="animate-spin text-sm">⏳</span>
+                      <span className="hidden sm:inline">Procesando...</span>
                     </>
                   ) : (
                     <>
-                      ❌ Rechazar
+                      ❌ <span className="hidden sm:inline">Rechazar</span>
                     </>
                   )}
                 </button>

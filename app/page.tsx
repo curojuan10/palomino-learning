@@ -1,6 +1,62 @@
 import Link from 'next/link';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import CourseCard from '@/components/CourseCard';
 
-export default function Home() {
+async function getCursosActivos() {
+  try {
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              try {
+                cookieStore.set(name, value, options);
+              } catch (error) {
+                // Ignorar errores de cookies
+              }
+            });
+          },
+        },
+      }
+    );
+
+    const { data: cursos, error } = await supabase
+      .from('cursos')
+      .select('*')
+      .eq('estado', true)
+      .order('fecha_creacion', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching courses:', error);
+      return [];
+    }
+
+    return (cursos || []).map((curso: any) => ({
+      id: curso.id,
+      title: curso.nombre,
+      category: curso.categoria,
+      price: curso.precio,
+      duration: curso.duracion,
+      students: 'Online',
+      imageUrl: curso.imagen_url,
+      level: 'Intermedio',
+      description: curso.descripcion,
+    }));
+  } catch (error) {
+    console.error('Error getting active courses:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const courses = await getCursosActivos();
   const stats = [
     { number: '500+', label: 'Estudiantes Activos', icon: '👥' },
     { number: '50+', label: 'Cursos Disponibles', icon: '📚' },
@@ -59,69 +115,6 @@ export default function Home() {
       role: 'Data Scientist',
       image: '👨‍🔬',
       text: 'La mejor inversión que hice. Valió cada sol gastado en aprendizaje de calidad.',
-    },
-  ];
-
-  const courses = [
-    {
-      id: 1,
-      title: 'Python Avanzado',
-      category: 'PROGRAMACIÓN',
-      price: 99.99,
-      duration: '40h',
-      students: '1,234 estudiantes',
-      image: '🐍',
-      level: 'Intermedio',
-    },
-    {
-      id: 2,
-      title: 'JavaScript Moderno',
-      category: 'DESARROLLO WEB',
-      price: 89.99,
-      duration: '35h',
-      students: '2,456 estudiantes',
-      image: '⚡',
-      level: 'Principiante',
-    },
-    {
-      id: 3,
-      title: 'React & Next.js',
-      category: 'FRONTEND',
-      price: 109.99,
-      duration: '50h',
-      students: '3,789 estudiantes',
-      image: '⚛️',
-      level: 'Intermedio',
-    },
-    {
-      id: 4,
-      title: 'Diseño UX/UI',
-      category: 'DISEÑO',
-      price: 79.99,
-      duration: '30h',
-      students: '1,987 estudiantes',
-      image: '🎨',
-      level: 'Principiante',
-    },
-    {
-      id: 5,
-      title: 'TypeScript Pro',
-      category: 'PROGRAMACIÓN',
-      price: 89.99,
-      duration: '25h',
-      students: '892 estudiantes',
-      image: '🔵',
-      level: 'Avanzado',
-    },
-    {
-      id: 6,
-      title: 'Node.js & APIs REST',
-      category: 'BACKEND',
-      price: 99.99,
-      duration: '45h',
-      students: '2,123 estudiantes',
-      image: '🟢',
-      level: 'Intermedio',
     },
   ];
 
@@ -226,43 +219,18 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500/50 transition group"
-              >
-                <div className="bg-linear-to-br from-slate-700 to-slate-800 h-48 flex items-center justify-center text-8xl group-hover:scale-110 transition">
-                  {course.image}
-                </div>
-
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-blue-400 bg-blue-400/20 px-3 py-1 rounded-full">
-                      {course.category}
-                    </span>
-                    <span className="text-xs text-gray-400">{course.level}</span>
-                  </div>
-
-                  <h3 className="text-xl font-bold mb-2">{course.title}</h3>
-                  <p className="text-sm text-gray-400 mb-4">{course.students}</p>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-700">
-                    <div>
-                      <div className="text-2xl font-black text-green-400">S/{course.price}</div>
-                      <div className="text-xs text-gray-500">{course.duration}</div>
-                    </div>
-                    <Link
-                      href="/courses"
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-bold text-sm transition"
-                    >
-                      Comprar
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          {courses.length === 0 ? (
+            <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
+              <p className="text-gray-400 text-lg">📚 No hay cursos disponibles aún.</p>
+              <p className="text-gray-500 text-sm mt-2">Vuelve pronto para ver nuevos cursos.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-6">
+              {courses.map((course) => (
+                <CourseCard key={course.id} course={course} />
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-12 md:hidden">
             <Link
