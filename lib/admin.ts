@@ -219,36 +219,73 @@ export async function subirImagenCurso(file: File, nombreCurso: string) {
 export async function getEstadisticasAdmin() {
   const client = createClient();
 
-  // Total usuarios
-  const { count: totalUsuarios = 0 } = await client
-    .from('usuarios')
-    .select('id', { count: 'exact', head: true });
+  try {
+    console.log('📊 Obteniendo estadísticas del admin...');
 
-  // Total cursos
-  const { count: totalCursos = 0 } = await client
-    .from('cursos')
-    .select('id', { count: 'exact', head: true });
+    // Total usuarios
+    console.log('👥 Contando usuarios...');
+    const { count: totalUsuarios = 0, error: errorUsuarios } = await client
+      .from('usuarios')
+      .select('id', { count: 'exact', head: true });
 
-  // Pagos pendientes
-  const { count: pagosPendientes = 0 } = await client
-    .from('pagos')
-    .select('id', { count: 'exact', head: true })
-    .eq('estado', 'PENDIENTE');
+    if (errorUsuarios) {
+      console.warn('⚠️ Error al contar usuarios:', errorUsuarios);
+    } else {
+      console.log(`✅ Total usuarios: ${totalUsuarios}`);
+    }
 
-  // Ingresos totales
-  const { data: pagosAprobados } = await client
-    .from('pagos')
-    .select('monto')
-    .eq('estado', 'APROBADO');
+    // Total cursos
+    console.log('📚 Contando cursos...');
+    const { count: totalCursos = 0, error: errorCursos } = await client
+      .from('cursos')
+      .select('id', { count: 'exact', head: true });
 
-  const ingresoTotal = (pagosAprobados || []).reduce((sum, p) => sum + (p.monto || 0), 0);
+    if (errorCursos) {
+      console.warn('⚠️ Error al contar cursos:', errorCursos);
+    } else {
+      console.log(`✅ Total cursos: ${totalCursos}`);
+    }
 
-  return {
-    totalUsuarios: totalUsuarios || 0,
-    totalCursos: totalCursos || 0,
-    pagosPendientes: pagosPendientes || 0,
-    ingresoTotal,
-  };
+    // Pagos pendientes
+    console.log('💳 Contando pagos pendientes...');
+    const { count: pagosPendientes = 0, error: errorPagos } = await client
+      .from('pagos')
+      .select('id', { count: 'exact', head: true })
+      .eq('estado', 'PENDIENTE');
+
+    if (errorPagos) {
+      console.warn('⚠️ Error al contar pagos:', errorPagos);
+    } else {
+      console.log(`✅ Pagos pendientes: ${pagosPendientes}`);
+    }
+
+    // Ingresos totales
+    console.log('💰 Calculando ingresos...');
+    const { data: pagosAprobados, error: errorIngresos } = await client
+      .from('pagos')
+      .select('monto')
+      .eq('estado', 'APROBADO');
+
+    if (errorIngresos) {
+      console.warn('⚠️ Error al obtener ingresos:', errorIngresos);
+    }
+
+    const ingresoTotal = (pagosAprobados || []).reduce((sum, p) => sum + (p.monto || 0), 0);
+    console.log(`✅ Ingresos totales: S/${ingresoTotal}`);
+
+    const stats = {
+      totalUsuarios: totalUsuarios || 0,
+      totalCursos: totalCursos || 0,
+      pagosPendientes: pagosPendientes || 0,
+      ingresoTotal,
+    };
+
+    console.log('✅ Estadísticas completadas:', stats);
+    return stats;
+  } catch (err: any) {
+    console.error('💥 Error en getEstadisticasAdmin:', err);
+    throw err;
+  }
 }
 
 // Obtener pagos pendientes
@@ -366,4 +403,110 @@ export async function rechazarPago(pagoId: string) {
   }
 
   return true;
+}
+
+// Obtener todos los pagos procesados (aprobados y rechazados)
+export async function getPagosProcessados() {
+  const client = createClient();
+  
+  try {
+    console.log('📦 Obteniendo pagos procesados...');
+    
+    // Obtener pagos procesados
+    const { data: pagos, error } = await client
+      .from('pagos')
+      .select('id, estado, monto, metodo_pago, comprobante_url, compra_id')
+      .neq('estado', 'PENDIENTE');
+
+    if (error) {
+      console.error('❌ Error en query de pagos:', error);
+      throw new Error(`No se pudieron obtener pagos: ${error.message}`);
+    }
+    
+    console.log(`✅ Pagos encontrados: ${pagos?.length || 0}`);
+    
+    if (!pagos || pagos.length === 0) {
+      console.log('ℹ️ No hay pagos procesados');
+      return [];
+    }
+
+    // Obtener IDs de compras
+    const compraIds = pagos.map((p: any) => p.compra_id).filter(Boolean);
+    console.log(`🔗 Buscando ${compraIds.length} compras...`);
+    
+    // Obtener datos de compras
+    const { data: comprasData, error: errorCompras } = await client
+      .from('compras')
+      .select('id, usuario_id, curso_id')
+      .in('id', compraIds);
+    
+    if (errorCompras) {
+      console.error('❌ Error en query de compras:', errorCompras);
+      throw new Error(`No se pudieron obtener compras: ${errorCompras.message}`);
+    }
+    
+    const compras = comprasData || [];
+    console.log(`✅ Compras encontradas: ${compras.length}`);
+
+    // Obtener datos de usuarios
+    const usuarioIds = compras.map((c: any) => c.usuario_id).filter(Boolean);
+    console.log(`👥 Buscando ${usuarioIds.length} usuarios...`);
+    
+    const { data: usuariosData, error: errorUsuarios } = await client
+      .from('usuarios')
+      .select('id, nombre, email')
+      .in('id', usuarioIds);
+    
+    if (errorUsuarios) {
+      console.error('❌ Error en query de usuarios:', errorUsuarios);
+      throw new Error(`No se pudieron obtener usuarios: ${errorUsuarios.message}`);
+    }
+    
+    const usuarios = usuariosData || [];
+    console.log(`✅ Usuarios encontrados: ${usuarios.length}`);
+
+    // Obtener datos de cursos
+    const cursoIds = compras.map((c: any) => c.curso_id).filter(Boolean);
+    console.log(`📚 Buscando ${cursoIds.length} cursos...`);
+    
+    const { data: cursosData, error: errorCursos } = await client
+      .from('cursos')
+      .select('id, nombre')
+      .in('id', cursoIds);
+    
+    if (errorCursos) {
+      console.error('❌ Error en query de cursos:', errorCursos);
+      throw new Error(`No se pudieron obtener cursos: ${errorCursos.message}`);
+    }
+    
+    const cursos = cursosData || [];
+    console.log(`✅ Cursos encontrados: ${cursos.length}`);
+
+    // Combinar datos
+    const resultado = pagos.map((pago: any) => {
+      const compra = compras.find((c: any) => c.id === pago.compra_id);
+      const usuario = usuarios.find((u: any) => u.id === compra?.usuario_id);
+      const curso = cursos.find((c: any) => c.id === compra?.curso_id);
+
+      return {
+        ...pago,
+        compra: {
+          id: compra?.id,
+          usuario: {
+            nombre: usuario?.nombre || 'Desconocido',
+            email: usuario?.email || 'N/A',
+          },
+          curso: {
+            titulo: curso?.nombre || 'Curso eliminado',
+          },
+        },
+      };
+    });
+
+    console.log(`✅ Reporte completado: ${resultado.length} pagos procesados`);
+    return resultado;
+  } catch (err: any) {
+    console.error('💥 Error en getPagosProcessados:', err);
+    throw err;
+  }
 }

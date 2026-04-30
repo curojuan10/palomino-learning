@@ -58,10 +58,10 @@ async function getCursosActivos() {
 export default async function Home() {
   const courses = await getCursosActivos();
   const stats = [
-    { number: '500+', label: 'Estudiantes Activos', icon: '👥' },
-    { number: '50+', label: 'Cursos Disponibles', icon: '📚' },
-    { number: '4.9★', label: 'Calificación Promedio', icon: '⭐' },
-    { number: '10K+', label: 'Horas de Contenido', icon: '⏱️' },
+    { number: 'Atención Personalizada', label: ' ', icon: '👥' },
+    { number: '20+ Cursos', label: ' Disponibles', icon: '📚' },
+    { number: 'Contenido Actualizado ', label: '', icon: '⭐' },
+    { number: 'Enfoque 100% Práctico', label: 'Horas de Contenido', icon: '⏱️' },
   ];
 
   const features = [
@@ -184,7 +184,8 @@ export default async function Home() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-4">¿Por qué elegir Palomino Learning?</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Somos la plataforma número 1 en Latinoamérica para aprender tecnología
+              Impulsa tu carrera profesional con formación tecnológica de vanguardia.
+               Cursos diseñados por expertos para el mercado laboral actual.
             </p>
           </div>
 
@@ -243,38 +244,51 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Testimonios */}
-      <section className="py-20 px-4 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-4">Lo que Dicen Nuestros Estudiantes</h2>
-            <p className="text-gray-400 text-lg">Miles de vidas transformadas</p>
-          </div>
+      {/* Sección de Beneficios / Pilares */}
+<section className="py-20 px-4 bg-slate-900/50">
+  <div className="max-w-7xl mx-auto">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-black mb-4">Tu Éxito es Nuestra Prioridad</h2>
+      <p className="text-gray-400 text-lg">Formación técnica diseñada para resultados reales</p>
+    </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <div key={idx} className="bg-slate-800 border border-slate-700 rounded-lg p-8 hover:border-blue-500/50 transition">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="text-5xl">{testimonial.image}</div>
-                  <div>
-                    <h3 className="font-bold text-lg">{testimonial.name}</h3>
-                    <p className="text-gray-400 text-sm">{testimonial.role}</p>
-                  </div>
-                </div>
-                <p className="text-gray-300 italic">"{testimonial.text}"</p>
-                <div className="text-yellow-400 mt-4">★★★★★</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+    <div className="grid md:grid-cols-3 gap-8">
+      {/* Pilar 1 */}
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 hover:border-blue-500/50 transition">
+        <div className="text-4xl mb-4">🚀</div>
+        <h3 className="font-bold text-xl mb-2">Proyectos Reales</h3>
+        <p className="text-gray-400 text-sm leading-relaxed">
+          No solo teoría. Aprenderás construyendo aplicaciones y soluciones que las empresas buscan hoy en día.
+        </p>
+      </div>
+
+      {/* Pilar 2 */}
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 hover:border-blue-500/50 transition">
+        <div className="text-4xl mb-4">👨‍🏫</div>
+        <h3 className="font-bold text-xl mb-2">Mentoría Directa</h3>
+        <p className="text-gray-400 text-sm leading-relaxed">
+          Tendrás canales de comunicación abiertos para resolver tus dudas técnicas de forma personalizada.
+        </p>
+      </div>
+
+      {/* Pilar 3 */}
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 hover:border-blue-500/50 transition">
+        <div className="text-4xl mb-4">🛠️</div>
+        <h3 className="font-bold text-xl mb-2">Acceso de por Vida</h3>
+        <p className="text-gray-400 text-sm leading-relaxed">
+          Compra una vez y accede para siempre. Incluye todas las actualizaciones futuras de los cursos.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* CTA Final */}
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto bg-linear-to-r from-blue-600 to-purple-600 rounded-lg p-12 text-center">
           <h2 className="text-4xl font-black mb-4">¿Listo para Transformar tu Carrera?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Únete a miles de estudiantes aprendiendo hoy
+            Únete al aprendiendo hoy y el mundo de la tecnología estará a tu alcance. ¡Tu futuro comienza ahora!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

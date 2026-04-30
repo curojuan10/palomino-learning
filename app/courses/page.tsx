@@ -5,6 +5,7 @@ import { getCursos } from '@/lib/admin';
 import { useAuth } from '@/lib/useAuth';
 import ModalCompra from '@/components/ModalCompra';
 import Link from 'next/link';
+import { Clock, Globe, BookOpen, ShoppingCart, Flame } from 'lucide-react';
 
 export default function CoursesPage() {
   const { user } = useAuth();
@@ -62,14 +63,18 @@ export default function CoursesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-bold text-white">🔥 Cursos Disponibles</h1>
+        <div className="flex items-center gap-2 mb-2">
+          <Flame className="text-red-500" size={24} />
+          <h1 className="text-4xl font-bold text-white">Cursos Disponibles</h1>
+        </div>
         <p className="text-gray-400 mt-2">Selecciona los cursos que deseas tomar y comprarlos</p>
       </div>
 
       {/* Grid de Cursos */}
       {cursos.length === 0 ? (
         <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center space-y-4">
-          <p className="text-gray-400 text-lg">📚 No hay cursos disponibles en este momento</p>
+          <BookOpen className="mx-auto text-gray-500" size={48} />
+          <p className="text-gray-400 text-lg">No hay cursos disponibles en este momento</p>
           <p className="text-gray-500 text-sm">Los cursos aparecerán aquí cuando estén activos en el sistema.</p>
           {user?.user_metadata?.role === 'ADMIN' && (
             <Link
@@ -85,52 +90,52 @@ export default function CoursesPage() {
           {cursos.map((curso: any) => (
             <div
               key={curso.id}
-              className="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-blue-500/50 transition duration-300 hover:shadow-xl hover:shadow-blue-500/10"
+              className="group bg-slate-900 border border-slate-800 rounded-xl overflow-hidden hover:border-blue-500/50 transition duration-300 hover:shadow-xl hover:shadow-blue-500/10 flex flex-col h-full"
             >
               {/* Header */}
               {curso.imagen_url ? (
                 <img
                   src={curso.imagen_url}
                   alt={curso.titulo}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-48 object-cover group-hover:scale-110 transition"
                 />
               ) : (
-                <div className="w-full h-40 bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center text-4xl">
-                  📚
+                <div className="w-full h-48 bg-linear-to-br from-blue-600 to-blue-700 flex items-center justify-center group-hover:scale-110 transition">
+                  <BookOpen size={56} className="text-blue-200" />
                 </div>
               )}
 
               {/* Content */}
-              <div className="p-5">
+              <div className="p-5 flex flex-col flex-1">
                 <p className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-2">
                   {curso.categoria}
                 </p>
-                <h3 className="font-bold text-base text-white mb-3 line-clamp-2 group-hover:text-blue-400 transition">
+                <h3 className="font-bold text-lg text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition">
                   {curso.titulo}
                 </h3>
 
-                <p className="text-xs text-gray-400 mb-3 line-clamp-2">
+                <p className="text-xs text-gray-400 mb-3 line-clamp-2 flex-1">
                   {curso.descripcion}
                 </p>
 
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                  <span>⏱️ {curso.duracion}</span>
-                  <span>🌐 Online</span>
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-3 gap-2">
+                  <span className="flex items-center gap-1"><Clock size={12} /> {curso.duracion}</span>
+                  <span className="flex items-center gap-1"><Globe size={12} /> Online</span>
                 </div>
 
-                <div className="border-t border-slate-800 pt-4">
-                  <div className="flex items-baseline justify-between mb-4">
-                    <span className="text-2xl font-black text-white">
+                <div className="border-t border-slate-800 pt-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl font-black text-white whitespace-nowrap">
                       S/{curso.precio}
                     </span>
+                    <button
+                      onClick={() => handleComprar(curso)}
+                      className="flex-1 py-2 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-semibold text-sm transition flex items-center justify-center gap-1"
+                    >
+                      <ShoppingCart size={16} />
+                      Comprar
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => handleComprar(curso)}
-                    className="w-full py-2 bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-lg font-bold text-center text-sm transition transform hover:scale-105"
-                  >
-                    ✅ Comprar Ahora
-                  </button>
                 </div>
               </div>
             </div>

@@ -118,6 +118,13 @@ export default function AdminLayout({
               <span>Pagos</span>
             </Link>
             <Link
+              href="/admin/reportes"
+              className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-gray-300 hover:bg-slate-800 transition text-sm sm:text-base"
+            >
+              <span>📊</span>
+              <span>Reportes</span>
+            </Link>
+            <Link
               href="/admin/estudiantes"
               className="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-gray-300 hover:bg-slate-800 transition text-sm sm:text-base"
             >
@@ -140,13 +147,12 @@ export default function AdminLayout({
               </>
             ) : (
               <>
-                🚪 <span className="hidden sm:inline">Cerrar</span>
+                🚪 <span className="hidden sm:inline">Cerrar Sesión</span>
               </>
             )}
           </button>
         </div>
       </aside>
-
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         <div className="p-4 sm:p-6 lg:p-8">

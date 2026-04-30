@@ -78,7 +78,7 @@ export default function CursosDisponiblesPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* Header */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 sm:p-8">
         <h1 className="text-3xl sm:text-4xl font-black text-white mb-2">📚 Cursos Disponibles</h1>
@@ -91,7 +91,7 @@ export default function CursosDisponiblesPage() {
           <p className="text-gray-400 text-lg">No hay cursos disponibles en este momento</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {cursos.map((curso) => (
             <div
               key={curso.id}

@@ -15,7 +15,6 @@ export default function ConditionalShell({ children }: { children: React.ReactNo
     return (
       <>
         {children}
-        <WhatsAppButton />
       </>
     );
   }

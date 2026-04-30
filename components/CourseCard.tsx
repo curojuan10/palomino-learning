@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/useAuth';
+import { Clock, Globe, BookOpen, Info } from 'lucide-react';
 
 interface CourseCardProps {
   course: {
@@ -39,11 +40,10 @@ export default function CourseCard({ course }: CourseCardProps) {
     }
   };
 
-
-
   return (
     <>
-      <div className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500/50 transition">
+      <div className="group bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg overflow-hidden hover:border-blue-500/50 transition flex flex-col h-full">
+        {/* Imagen con altura fija */}
         {course.imageUrl ? (
           <img
             src={course.imageUrl}
@@ -51,38 +51,44 @@ export default function CourseCard({ course }: CourseCardProps) {
             className="w-full h-48 object-cover group-hover:scale-110 transition"
           />
         ) : (
-          <div className="bg-linear-to-br from-slate-700 to-slate-800 h-48 flex items-center justify-center text-8xl group-hover:scale-110 transition">
-            📚
+          <div className="bg-linear-to-br from-slate-700 to-slate-800 h-48 flex items-center justify-center group-hover:scale-110 transition">
+            <BookOpen size={56} className="text-slate-600" />
           </div>
         )}
 
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-blue-400 bg-blue-400/20 px-3 py-1 rounded-full">
+        {/* Contenido */}
+        <div className="p-5 flex flex-col flex-1">
+          {/* Header con categoría y nivel */}
+          <div className="flex items-center justify-between mb-2 gap-2">
+            <span className="text-xs font-bold text-blue-400 bg-blue-400/20 px-2 py-1 rounded-full line-clamp-1">
               {course.category}
             </span>
-            <span className="text-xs text-gray-400">{course.level}</span>
+            <span className="text-xs text-gray-400 whitespace-nowrap">{course.level}</span>
           </div>
 
-          <h3 className="text-xl font-bold mb-2 text-white">{course.title}</h3>
-          <p className="text-sm text-gray-400 mb-4 line-clamp-2">{course.description}</p>
+          {/* Título más compacto */}
+          <h3 className="text-lg font-bold mb-2 text-white line-clamp-2">{course.title}</h3>
+          
+          {/* Descripción */}
+          <p className="text-xs text-gray-400 mb-3 line-clamp-2 flex-1">{course.description}</p>
 
-          <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-            <span>⏱️ {course.duration}</span>
-            <span>🌐 Online</span>
+          {/* Duración y modalidad */}
+          <div className="flex items-center justify-between text-xs text-gray-500 mb-3 gap-2">
+            <span className="flex items-center gap-1"><Clock size={12} /> {course.duration}</span>
+            <span className="flex items-center gap-1"><Globe size={12} /> Online</span>
           </div>
 
-          <div className="border-t border-slate-700 pt-4">
-            <div className="flex items-baseline justify-between mb-4">
-              <span className="text-2xl font-black text-white">S/{course.price}</span>
-            </div>
-
-            <div className="flex gap-2">
+          {/* Divisor */}
+          <div className="border-t border-slate-700 pt-3">
+            {/* Precio y botón alineados compactamente */}
+            <div className="flex items-center gap-3">
+              <span className="text-2xl font-black text-white whitespace-nowrap">S/{course.price}</span>
               <button
                 onClick={handleVerInfo}
-                className="w-full py-2 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-bold text-sm transition"
+                className="flex-1 py-2 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-semibold text-sm transition flex items-center justify-center gap-1"
               >
-                ℹ️ Más Información
+                <Info size={16} />
+                Más Info
               </button>
             </div>
           </div>

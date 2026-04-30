@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Search, ChevronDown, Rocket, LogOut } from 'lucide-react';
+import Image from 'next/image';
+import { Menu, X, Search, ChevronDown, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/useAuth';
 import { createClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
@@ -24,9 +25,15 @@ export default function Navbar() {
         
         {/* SECCIÓN IZQUIERDA: Logo y Navegación Principal */}
         <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-900/20 group-hover:scale-105 transition">
-              <Rocket size={20} fill="currentColor" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-14 h-14 relative group-hover:scale-105 transition rounded-lg overflow-hidden shadow-lg shadow-blue-900/30">
+              <Image 
+                src="/logo.jpg" 
+                alt="Palomino Learning" 
+                width={56} 
+                height={56} 
+                className="rounded-lg object-cover w-full h-full"
+              />
             </div>
             <span className="text-white font-bold text-xl tracking-tight">Palomino</span>
           </Link>

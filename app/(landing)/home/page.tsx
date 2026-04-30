@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Rocket, Code, Zap, Atom, Palette, BookOpen, DollarSign, Clock, Globe, Award } from 'lucide-react';
 
 export default function Home() {
   const courses = [
@@ -10,7 +11,7 @@ export default function Home() {
       originalPrice: 129.99,
       duration: '40h',
       students: 'Online',
-      image: '🐍',
+      icon: Code,
       color: 'from-blue-600 to-blue-800',
       badge: 'NUEVO',
     },
@@ -22,7 +23,7 @@ export default function Home() {
       originalPrice: 119.99,
       duration: '35h',
       students: 'Online',
-      image: '⚡',
+      icon: Zap,
       color: 'from-yellow-500 to-orange-600',
       badge: 'POPULAR',
     },
@@ -34,7 +35,7 @@ export default function Home() {
       originalPrice: 149.99,
       duration: '50h',
       students: 'Online',
-      image: '⚛️',
+      icon: Atom,
       color: 'from-cyan-500 to-blue-600',
       badge: 'NUEVO',
     },
@@ -46,7 +47,7 @@ export default function Home() {
       originalPrice: 99.99,
       duration: '30h',
       students: 'Online',
-      image: '🎨',
+      icon: Palette,
       color: 'from-pink-500 to-purple-600',
       badge: 'TRENDING',
     },
@@ -63,7 +64,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/50 rounded-full mb-6">
-              <span className="text-blue-400 text-sm font-semibold">🚀 Bienvenido a Palomino Learning</span>
+              <Rocket size={16} className="text-blue-400" />
+              <span className="text-blue-400 text-sm font-semibold">Bienvenido a Palomino Learning</span>
             </div>
 
             <h1 className="text-6xl md:text-7xl font-black mb-6 leading-tight">
@@ -127,17 +129,19 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {courses.map((course) => (
+            {courses.map((course) => {
+              const IconComponent = course.icon;
+              return (
               <div
                 key={course.id}
                 className="group bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-blue-500/50 transition duration-300 hover:shadow-xl hover:shadow-blue-500/20"
               >
                 {/* Image */}
                 <div
-                  className={`h-40 bg-linear-to-br ${course.color} flex items-center justify-center text-7xl relative overflow-hidden`}
+                  className={`h-40 bg-linear-to-br ${course.color} flex items-center justify-center relative overflow-hidden`}
                 >
+                  <IconComponent size={64} className="text-white opacity-80" />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-white transition"></div>
-                  {course.image}
                   <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                     {course.badge}
                   </div>
@@ -149,8 +153,8 @@ export default function Home() {
                   <h3 className="font-bold text-lg mb-3 group-hover:text-blue-400 transition">{course.title}</h3>
 
                   <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                    <span>⏱️ {course.duration}</span>
-                    <span>🌐 {course.students}</span>
+                    <span className="flex items-center gap-1"><Clock size={14} /> {course.duration}</span>
+                    <span className="flex items-center gap-1"><Globe size={14} /> {course.students}</span>
                   </div>
 
                   <div className="border-t border-white/10 pt-4">
@@ -169,7 +173,8 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       </section>
@@ -181,19 +186,19 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-linear-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">📚</div>
+              <BookOpen size={48} className="text-blue-400 mb-4" />
               <h3 className="text-2xl font-bold mb-3">Contenido Premium</h3>
               <p className="text-gray-400">Cursos diseñados por profesionales con años de experiencia en la industria.</p>
             </div>
 
             <div className="bg-linear-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">💰</div>
+              <DollarSign size={48} className="text-purple-400 mb-4" />
               <h3 className="text-2xl font-bold mb-3">Precios Accesibles</h3>
               <p className="text-gray-400">Invierte en tu educación sin quebrar el banco. Paga solo una vez.</p>
             </div>
 
             <div className="bg-linear-to-br from-pink-900/30 to-pink-800/30 border border-pink-500/20 rounded-xl p-8">
-              <div className="text-5xl mb-4">⚡</div>
+              <Zap size={48} className="text-pink-400 mb-4" />
               <h3 className="text-2xl font-bold mb-3">Acceso Inmediato</h3>
               <p className="text-gray-400">Una vez aprobado tu pago, acceso instantáneo a todo el contenido del curso.</p>
             </div>

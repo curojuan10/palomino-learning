@@ -14,18 +14,23 @@ export default function AdminDashboard() {
   });
   const [pagosPendientes, setPagosPendientes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [chartData, setChartData] = useState<any[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
+        console.log('🔄 Cargando datos del admin...');
         const estadisticas = await getEstadisticasAdmin();
         setStats(estadisticas);
 
         const pagos = await getPagosPendientes();
         setPagosPendientes(pagos);
-      } catch (error) {
-        console.error('Error loading admin data:', error);
+        setError(null);
+      } catch (error: any) {
+        console.error('❌ Error loading admin data:', error);
+        const errorMessage = error?.message || 'Error al cargar datos';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -33,6 +38,28 @@ export default function AdminDashboard() {
 
     loadData();
   }, []);
+
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    const loadData = async () => {
+      try {
+        console.log('🔄 Reintentando...');
+        const estadisticas = await getEstadisticasAdmin();
+        setStats(estadisticas);
+
+        const pagos = await getPagosPendientes();
+        setPagosPendientes(pagos);
+        setError(null);
+      } catch (error: any) {
+        console.error('❌ Error:', error);
+        setError(error?.message || 'Error al cargar datos');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  };
 
   if (loading) {
     return (
@@ -47,6 +74,24 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {/* Error Alert */}
+      {error && (
+        <div className="bg-red-900 border border-red-700 rounded-lg p-4 sm:p-6">
+          <p className="text-red-100 font-semibold">⚠️ Error cargando datos</p>
+          <p className="text-red-200 text-sm mt-2 break-words">{error}</p>
+          <p className="text-red-300 text-xs mt-3">
+            💡 Posible causa: Políticas RLS no configuradas en Supabase. 
+            Revisa: <code className="bg-red-800 px-2 py-1 rounded">docs/SUPABASE_RLS_COMPLETE.md</code>
+          </p>
+          <button
+            onClick={handleRetry}
+            className="mt-4 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded transition"
+          >
+            🔄 Reintentar
+          </button>
+        </div>
+      )}
+
       {/* Título */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 sm:p-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">📊 Panel Administrativo</h1>

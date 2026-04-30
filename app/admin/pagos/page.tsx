@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getPagosPendientes, aprobarPago, rechazarPago } from '@/lib/admin';
 
 export default function AdminPagos() {
@@ -69,13 +70,21 @@ export default function AdminPagos() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-white">💳 Pagos Pendientes</h1>
-        <p className="text-gray-400 mt-1 text-sm sm:text-base">
-          {pagos.length > 0
-            ? `${pagos.length} pago${pagos.length !== 1 ? 's' : ''} pendiente${pagos.length !== 1 ? 's' : ''} de revisar`
-            : 'No hay pagos pendientes'}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">💳 Pagos Pendientes</h1>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">
+            {pagos.length > 0
+              ? `${pagos.length} pago${pagos.length !== 1 ? 's' : ''} pendiente${pagos.length !== 1 ? 's' : ''} de revisar`
+              : 'No hay pagos pendientes'}
+          </p>
+        </div>
+        <Link
+          href="/admin/reportes"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition text-sm sm:text-base flex items-center justify-center gap-2"
+        >
+          📊 Ver Reportes
+        </Link>
       </div>
 
       {/* Pagos List */}
@@ -140,18 +149,21 @@ export default function AdminPagos() {
               {pago.comprobante_url && (
                 <div className="mb-4 sm:mb-6">
                   <p className="text-gray-400 text-sm font-semibold mb-3">📄 Comprobante de Pago</p>
-                  <a
-                    href={pago.comprobante_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block w-full sm:w-auto max-w-md"
-                  >
-                    <img
-                      src={pago.comprobante_url}
-                      alt="Comprobante"
-                      className="w-full max-h-48 rounded-lg border border-slate-700 hover:border-blue-500 transition cursor-pointer"
-                    />
-                  </a>
+                  <div className="bg-slate-900 rounded-lg p-3 border border-slate-700 max-h-80 overflow-y-auto">
+                    <a
+                      href={pago.comprobante_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block w-full"
+                    >
+                      <img
+                        src={pago.comprobante_url}
+                        alt="Comprobante"
+                        className="w-full max-w-sm mx-auto rounded border border-slate-600 hover:border-blue-400 transition cursor-pointer"
+                      />
+                    </a>
+                  </div>
+                  <p className="text-gray-500 text-xs mt-2">Haz clic en la imagen para ver a tamaño completo</p>
                 </div>
               )}
 
